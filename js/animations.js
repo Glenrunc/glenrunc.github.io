@@ -288,69 +288,57 @@ class InteractiveCards {
 }
 
 // ==========================================================================
-// Skills Progress Animation
+// Matrix Text Effects (replaces Skills Progress)
 // ==========================================================================
 
-class SkillsProgress {
+class MatrixTextEffect {
     constructor() {
         this.skillItems = document.querySelectorAll('.skill-item');
         this.init();
     }
     
     init() {
-        this.addProgressBars();
+        this.addMatrixEffect();
         this.observeSkillsSection();
     }
     
-    addProgressBars() {
+    addMatrixEffect() {
         this.skillItems.forEach(item => {
-            const progress = item.dataset.progress || Math.floor(Math.random() * 30) + 70;
-            
-            const progressBar = document.createElement('div');
-            progressBar.className = 'skill-progress';
-            progressBar.innerHTML = `
-                <div class="skill-progress-bar">
-                    <div class="skill-progress-fill" data-progress="${progress}"></div>
-                </div>
-                <span class="skill-progress-text">${progress}%</span>
+            const effectDiv = document.createElement('div');
+            effectDiv.className = 'matrix-effect';
+            effectDiv.innerHTML = `
+                <div class="matrix-text">[INITIALIZED]</div>
             `;
             
-            item.appendChild(progressBar);
+            item.appendChild(effectDiv);
         });
         
-        // Add CSS for progress bars
-        this.addProgressStyles();
+        // Add CSS for matrix effects
+        this.addMatrixStyles();
     }
     
-    addProgressStyles() {
+    addMatrixStyles() {
         const style = document.createElement('style');
         style.textContent = `
-            .skill-progress {
+            .matrix-effect {
                 margin-top: 10px;
                 width: 100%;
+                text-align: center;
             }
             
-            .skill-progress-bar {
-                width: 100%;
-                height: 6px;
-                background: rgba(102, 126, 234, 0.2);
-                border-radius: 3px;
-                overflow: hidden;
-                margin-bottom: 5px;
+            .matrix-text {
+                font-family: 'Courier New', monospace;
+                font-size: 0.8rem;
+                color: var(--primary-color);
+                text-shadow: 0 0 5px var(--primary-color);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+                animation: matrixBlink 2s infinite;
             }
             
-            .skill-progress-fill {
-                height: 100%;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                border-radius: 3px;
-                width: 0;
-                transition: width 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-            }
-            
-            .skill-progress-text {
-                font-size: 12px;
-                color: var(--text-light);
-                font-weight: 500;
+            @keyframes matrixBlink {
+                0%, 50% { opacity: 0.3; }
+                25%, 75% { opacity: 1; }
             }
         `;
         document.head.appendChild(style);
@@ -362,7 +350,7 @@ class SkillsProgress {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    this.animateProgress();
+                    this.animateMatrixText();
                     observer.unobserve(entry.target);
                 }
             });
@@ -373,14 +361,15 @@ class SkillsProgress {
         }
     }
     
-    animateProgress() {
-        const progressFills = document.querySelectorAll('.skill-progress-fill');
+    animateMatrixText() {
+        const matrixTexts = document.querySelectorAll('.matrix-text');
+        const messages = ['[LOADED]', '[ACTIVE]', '[ONLINE]', '[READY]', '[OK]'];
         
-        progressFills.forEach((fill, index) => {
+        matrixTexts.forEach((text, index) => {
             setTimeout(() => {
-                const progress = fill.dataset.progress;
-                fill.style.width = `${progress}%`;
-            }, index * 100);
+                text.style.opacity = '1';
+                text.textContent = messages[index % messages.length];
+            }, index * 200);
         });
     }
 }
@@ -473,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new ScrollAnimations();
     new ParallaxController();
     new InteractiveCards();
-    new SkillsProgress();
+    new MatrixTextEffect();
     new PageTransitions();
     
     // Add floating animation to specific elements
@@ -520,6 +509,6 @@ if (typeof window !== 'undefined') {
     window.ScrollAnimations = ScrollAnimations;
     window.ParallaxController = ParallaxController;
     window.InteractiveCards = InteractiveCards;
-    window.SkillsProgress = SkillsProgress;
+    window.MatrixTextEffect = MatrixTextEffect;
     window.PageTransitions = PageTransitions;
 }

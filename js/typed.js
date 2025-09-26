@@ -41,6 +41,7 @@ class TypedText {
                 color: var(--primary-color);
                 font-weight: 300;
                 margin-left: 2px;
+                text-shadow: 0 0 5px var(--primary-color);
             }
         `;
         document.head.appendChild(style);
@@ -109,13 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
         new TypedText(typedElement, {
             strings: [
                 'Full Stack Developer',
-                'UI/UX Designer', 
-                'Creative Problem Solver',
-                'Tech Enthusiast'
+                'System Architect', 
+                'Code Craftsman',
+                'Digital Innovator',
+                'Problem Solver'
             ],
-            typeSpeed: 80,
-            backSpeed: 40,
-            backDelay: 2000,
+            typeSpeed: 120,
+            backSpeed: 60,
+            backDelay: 2500,
             startDelay: 1500,
             loop: true
         });
@@ -423,9 +425,11 @@ class ParticleBackground {
                     this.ctx.beginPath();
                     this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
                     this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
-                    this.ctx.strokeStyle = `rgba(102, 126, 234, ${opacity * 0.2})`;
+                    this.ctx.strokeStyle = `rgba(0, 255, 65, ${opacity * 0.3})`;
                     this.ctx.lineWidth = 1;
                     this.ctx.stroke();
+                    this.ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
+                    this.ctx.shadowBlur = 2;
                 }
             }
         }
@@ -438,11 +442,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (heroSection && window.innerWidth > 768) {
         new ParticleBackground(heroSection, {
-            particleCount: 30,
-            particleColor: 'rgba(102, 126, 234, 0.4)',
-            connectionDistance: 120,
-            animationSpeed: 0.3
+            particleCount: 40,
+            particleColor: 'rgba(0, 255, 65, 0.6)',
+            connectionDistance: 100,
+            animationSpeed: 0.2
         });
+        
+        // Add matrix scanline effect
+        const scanline = document.createElement('div');
+        scanline.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            box-shadow: 0 0 10px var(--primary-color);
+            animation: scanline 3s linear infinite;
+            z-index: 2;
+            opacity: 0.7;
+        `;
+        
+        heroSection.appendChild(scanline);
+        
+        // Add scanline animation
+        const scanlineStyle = document.createElement('style');
+        scanlineStyle.textContent = `
+            @keyframes scanline {
+                0% { transform: translateY(0); opacity: 1; }
+                100% { transform: translateY(100vh); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(scanlineStyle);
     }
 });
 

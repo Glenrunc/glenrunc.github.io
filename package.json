@@ -31,19 +31,19 @@
     "animations"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com",
-    "url": "https://your-portfolio.com"
+    "name": "Mattéo",
+    "email": "pourcinematteo@gmail.com",
+    "url": "https://matteo-portfolio.com"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/portfolio.git"
+    "url": "https://github.com/Glenrunc/portfolio.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/portfolio/issues"
+    "url": "https://github.com/Glenrunc/portfolio/issues"
   },
-  "homepage": "https://yourusername.github.io/portfolio/",
+  "homepage": "https://glenrunc.github.io/portfolio/",
   "devDependencies": {
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.23.0",

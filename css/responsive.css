@@ -428,27 +428,29 @@
    ========================================================================== */
 @media (prefers-color-scheme: dark) {
     :root {
-        --text-primary: #f7fafc;
-        --text-secondary: #e2e8f0;
-        --text-light: #a0aec0;
-        --bg-primary: #1a202c;
-        --bg-secondary: #2d3748;
-        --bg-tertiary: #4a5568;
-        --border-color: #4a5568;
-        --shadow-color: rgba(0, 0, 0, 0.3);
+        --text-primary: #39ff14;
+        --text-secondary: #00ff41;
+        --text-light: #00cc33;
+        --bg-primary: #000000;
+        --bg-secondary: #0d1117;
+        --bg-tertiary: #161b22;
+        --border-color: #21262d;
+        --shadow-color: rgba(0, 255, 65, 0.3);
     }
     
     .navbar {
-        background: rgba(26, 32, 44, 0.95);
+        background: rgba(0, 0, 0, 0.95);
         border-bottom-color: var(--border-color);
     }
     
     .hamburger .bar {
         background: var(--text-primary);
+        box-shadow: 0 0 5px var(--primary-color);
     }
     
     .project-image img {
         opacity: 0.8;
+        filter: sepia(100%) hue-rotate(90deg) saturate(150%);
     }
     
     .project-item:hover .project-image img {
