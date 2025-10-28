@@ -539,6 +539,37 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ============================================
+// LANGUAGE TOGGLE (FR / EN)
+// ============================================
+const langToggle = document.getElementById('lang-toggle');
+const langText = langToggle.querySelector('.lang-text');
+
+// Check for saved language preference or default to English
+let currentLang = localStorage.getItem('language') || 'en';
+if (currentLang === 'fr') {
+    langText.textContent = 'FR';
+    updateLanguage('fr');
+}
+
+langToggle.addEventListener('click', () => {
+    // Toggle between EN and FR
+    currentLang = currentLang === 'en' ? 'fr' : 'en';
+    langText.textContent = currentLang.toUpperCase();
+    localStorage.setItem('language', currentLang);
+    updateLanguage(currentLang);
+});
+
+function updateLanguage(lang) {
+    // Update all elements with data-en and data-fr attributes
+    document.querySelectorAll('[data-en][data-fr]').forEach(element => {
+        const text = element.getAttribute(`data-${lang}`);
+        if (text) {
+            element.textContent = text;
+        }
+    });
+}
+
+// ============================================
 // CONSOLE MESSAGE
 // ============================================
 console.log('%c👋 Hi there!', 'font-size: 20px; font-weight: bold;');

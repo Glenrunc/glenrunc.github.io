@@ -19,11 +19,17 @@
     <!-- Fixed Header Navigation -->
     <header class="header">
         <div class="container">
+                <!-- Language Control -->
+                <div class="controls">
+                    <button id="lang-toggle" class="control-btn" aria-label="Toggle language">
+                        <span class="lang-text">EN</span>
+                    </button>
+                </div>
                 <nav class="nav">
-                    <a href="#home" class="nav-link">Home</a>
-                    <a href="#projects" class="nav-link">Projects</a>
-                    <a href="#videos" class="nav-link">Videos</a>
-                    <a href="#contact" class="nav-link">Contact</a>
+                    <a href="#home" class="nav-link" data-en="Home" data-fr="Accueil">Home</a>
+                    <a href="#projects" class="nav-link" data-en="Projects" data-fr="Projets">Projects</a>
+                    <a href="#videos" class="nav-link" data-en="Videos" data-fr="Vidéos">Videos</a>
+                    <a href="#contact" class="nav-link" data-en="Contact" data-fr="Contact">Contact</a>
                 </nav>
         </div>
     </header>
@@ -35,10 +41,12 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">Glen Morton</h1>
-                <p class="hero-bio">
+                <p class="hero-bio" 
+                   data-en="I began my academic journey at UTBM, pursuing an engineering degree in Computer Science with a focus on Virtual Worlds and Computer Vision. Building on that foundation, I am now a dual-degree student at UQAC, specializing in Machine and Deep Learning. I'm particularly curious about the architecture of generative models like GANs and their potential for creative applications. I explore the intersection of epistemology and technology. My work is driven by a fascination for AI architecture, complemented by a passion for visual arts and video."
+                   data-fr="J'ai commencé mon parcours académique à l'UTBM, poursuivant un diplôme d'ingénieur en informatique avec une spécialisation en Mondes Virtuels et Vision par Ordinateur. Sur cette base, je suis maintenant étudiant en double diplôme à l'UQAC, spécialisé en Apprentissage Automatique et Deep Learning. Je suis particulièrement curieux de l'architecture des modèles génératifs comme les GANs et leur potentiel pour des applications créatives. J'explore l'intersection de l'épistémologie et de la technologie. Mon travail est guidé par une fascination pour l'architecture de l'IA, complétée par une passion pour les arts visuels et la vidéo.">
                    I began my academic journey at UTBM, pursuing an engineering degree in Computer Science with a focus on Virtual Worlds and Computer Vision. Building on that foundation, I am now a dual-degree student at UQAC, specializing in Machine and Deep Learning. I'm particularly curious about the architecture of generative models like GANs and their potential for creative applications. I explore the intersection of epistemology and technology. My work is driven by a fascination for AI architecture, complemented by a passion for visual arts and video.
                 </p>
-                <a href="#projects" class="cta-button">See My Work</a>
+                <a href="#projects" class="cta-button" data-en="See My Work" data-fr="Voir mes projets">See My Work</a>
             </div>
         </div>
     </section>
@@ -46,8 +54,8 @@
     <!-- Topics Hotspot Section -->
     <section id="topics" class="topics-section">
         <div class="container">
-            <h2 class="section-title">Current Focus</h2>
-            <p class="section-subtitle">Topics and technologies I'm currently exploring</p>
+            <h2 class="section-title" data-en="Current Focus" data-fr="Focus Actuel">Current Focus</h2>
+            <p class="section-subtitle" data-en="Topics and technologies I'm currently exploring" data-fr="Sujets et technologies que j'explore actuellement">Topics and technologies I'm currently exploring</p>
         </div>
         <div class="topics-scroll-container">
             <div class="topics-track">
@@ -55,8 +63,8 @@
                 <!-- Topic Card 4 -->
                 <div class="topic-card">
                     <div class="topic-icon">🔧</div>
-                    <h3 class="topic-title">CNN from scratch</h3>
-                    <p class="topic-description">Building Convutionnal Neural Network using C without librairy</p>
+                    <h3 class="topic-title" data-en="CNN from scratch" data-fr="CNN from scratch">CNN from scratch</h3>
+                    <p class="topic-description" data-en="Building Convolutional Neural Network using C without library" data-fr="Construction de Réseaux de Neurones Convolutifs en C sans bibliothèque">Building Convolutional Neural Network using C without library</p>
                 </div>
                 
             
@@ -70,11 +78,11 @@
     <!-- GitHub Projects Section -->
     <section id="projects" class="projects">
         <div class="container">
-            <h2 class="section-title">Projects</h2>
-            <p class="section-subtitle">Explore my recent work</p>
+            <h2 class="section-title" data-en="Projects" data-fr="Projets">Projects</h2>
+            <p class="section-subtitle" data-en="Explore my recent work" data-fr="Découvrez mes travaux récents">Explore my recent work</p>
             <div id="projects-grid" class="projects-grid">
                 <!-- Projects will be dynamically loaded here -->
-                <div class="loading">Loading projects...</div>
+                <div class="loading" data-en="Loading projects..." data-fr="Chargement des projets...">Loading projects...</div>
             </div>
         </div>
     </section>
@@ -82,8 +90,10 @@
     <!-- Video Projects Section -->
     <section id="videos" class="videos">
         <div class="container">
-            <h2 class="section-title">Video Projects</h2>
-            <p class="section-subtitle">A filmmaker at heart, with a mission to create compelling scientific documentaries.
+            <h2 class="section-title" data-en="Video Projects" data-fr="Projets Vidéo">Video Projects</h2>
+            <p class="section-subtitle" 
+               data-en="A filmmaker at heart, with a mission to create compelling scientific documentaries."
+               data-fr="Cinéaste dans l'âme, avec pour mission de créer des documentaires scientifiques captivants.">A filmmaker at heart, with a mission to create compelling scientific documentaries.
 </p>
             <div class="videos-grid">
                 <!-- Video Thumbnail 1 -->
@@ -117,10 +127,12 @@
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
+            <h2 class="section-title" data-en="Get in Touch" data-fr="Me Contacter">Get in Touch</h2>
             <div class="contact-content">
-                <p class="contact-text">
-                    I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+                <p class="contact-text" 
+                   data-en="I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions."
+                   data-fr="Je suis toujours ouvert à discuter de nouveaux projets, d'idées créatives ou d'opportunités de faire partie de vos visions.">
+                    I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
                 </p>
                 <div class="contact-info">
                     <a href="mailto:pourcinematteo@gmail.com" class="contact-link">
