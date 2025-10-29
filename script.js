@@ -1,7 +1,59 @@
 /* ============================================
    MINIMALIST PORTFOLIO - SCRIPT.JS
-   Game of Life, Smooth scrolling, GitHub API, Video modal
+   Game of Life, Smooth scrolling, GitHub API, Video modal, Visitor Counter
    ============================================ */
+
+// ============================================
+// VISITOR COUNTER
+// ============================================
+async function initVisitorCounter() {
+    const counterElement = document.getElementById('visitor-count');
+    
+    if (!counterElement) {
+        console.log('Counter element not found');
+        return;
+    }
+    
+    try {
+        // Using a more reliable counter API - countapi.xyz with correct endpoint
+        const apiUrl = 'https://api.countapi.xyz/hit/glenrunc.github.io/portfolio';
+        
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+            throw new Error('API response not OK');
+        }
+        
+        const data = await response.json();
+        
+        console.log('Counter data:', data); // Debug
+        
+        if (data && data.value !== undefined) {
+            // Animate the counter
+            animateCounter(counterElement, data.value);
+        } else {
+            counterElement.textContent = '—';
+        }
+    } catch (error) {
+        console.error('Visitor counter error:', error);
+        counterElement.textContent = '—';
+    }
+}
+
+function animateCounter(element, targetValue) {
+    let currentValue = 0;
+    const duration = 1500; // 1.5 seconds
+    const increment = targetValue / (duration / 16); // 60fps
+    
+    const timer = setInterval(() => {
+        currentValue += increment;
+        if (currentValue >= targetValue) {
+            currentValue = targetValue;
+            clearInterval(timer);
+        }
+        element.textContent = Math.floor(currentValue).toLocaleString();
+    }, 16);
+}
 
 // ============================================
 // CONWAY'S GAME OF LIFE BACKGROUND
@@ -132,6 +184,7 @@ class GameOfLife {
 let gameOfLife;
 document.addEventListener('DOMContentLoaded', () => {
     gameOfLife = new GameOfLife('game-of-life');
+    initVisitorCounter();
 });
 
 // ============================================

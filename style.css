@@ -1335,10 +1335,41 @@ section.visible {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
 .footer p {
     margin: 0;
     font-size: 0.9rem;
     font-weight: 300;
+}
+
+/* Visitor Counter */
+.visitor-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 200;
+    letter-spacing: 0.05em;
+}
+
+.counter-label {
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+}
+
+.counter-value {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    min-width: 3ch;
+    text-align: left;
 }
 
 /* ============================================
