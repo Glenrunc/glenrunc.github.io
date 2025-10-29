@@ -539,6 +539,21 @@ section.visible {
     color: var(--text-primary);
     margin-bottom: 0.5rem;
     letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.country-flag {
+    font-size: 1.2rem;
+    line-height: 1;
+    opacity: 0.85;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.experience-item:hover .country-flag {
+    transform: scale(1.15);
+    opacity: 1;
 }
 
 .experience-company {
