@@ -308,6 +308,13 @@ async function fetchGitHubProjects() {
             `;
         }
         
+        // Re-initialize scroll reveal for newly added project cards
+        if (typeof initScrollReveal === 'function') {
+            setTimeout(() => {
+                initScrollReveal();
+            }, 100);
+        }
+        
     } catch (error) {
         console.error('Error fetching GitHub projects:', error);
         projectsGrid.innerHTML = `
@@ -847,6 +854,114 @@ function initTitleEffect() {
 
 // Initialize on load
 window.addEventListener('load', initTitleEffect);
+
+// ============================================
+// WOW EFFECTS - CUSTOM CURSOR
+// ============================================
+function initCustomCursor() {
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    document.body.appendChild(cursor);
+    
+    const cursorDot = document.createElement('div');
+    cursorDot.className = 'custom-cursor-dot';
+    document.body.appendChild(cursorDot);
+    
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    let dotX = 0, dotY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dotX = e.clientX;
+        dotY = e.clientY;
+    });
+    
+    // Smooth cursor follow
+    function updateCursor() {
+        cursorX += (mouseX - cursorX) * 0.15;
+        cursorY += (mouseY - cursorY) * 0.15;
+        
+        cursor.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px)`;
+        cursorDot.style.transform = `translate(${dotX - 2}px, ${dotY - 2}px)`;
+        
+        requestAnimationFrame(updateCursor);
+    }
+    updateCursor();
+    
+    // Hover effects on interactive elements
+    const hoverElements = document.querySelectorAll('a, button, .project-card, .topic-card, .project-mini-card');
+    hoverElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+            cursorDot.classList.add('hover');
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+            cursorDot.classList.remove('hover');
+        });
+    });
+}
+
+// ============================================
+// WOW EFFECTS - SCROLL REVEAL
+// ============================================
+function initScrollReveal() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('reveal');
+                }, index * 100);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all cards and experience items
+    document.querySelectorAll('.project-card, .experience-item').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// ============================================
+// WOW EFFECTS - MAGNETIC BUTTONS
+// ============================================
+function initMagneticButtons() {
+    const buttons = document.querySelectorAll('.cta-button, .lang-btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('mousemove', (e) => {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            button.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+        });
+        
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = 'translate(0, 0)';
+        });
+    });
+}
+
+// Initialize all wow effects
+window.addEventListener('load', () => {
+    // Custom cursor only on desktop
+    if (window.innerWidth > 768) {
+        initCustomCursor();
+        initMagneticButtons();
+    }
+    // Scroll reveal on all devices
+    setTimeout(() => {
+        initScrollReveal();
+    }, 500);
+});
 
 // ============================================
 // CONSOLE MESSAGE
