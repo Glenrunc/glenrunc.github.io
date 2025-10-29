@@ -623,6 +623,109 @@ function updateLanguage(lang) {
 }
 
 // ============================================
+// MORE PROJECTS - HORIZONTAL SCROLL
+// ============================================
+async function fetchMoreProjects() {
+    const moreProjectsList = document.getElementById('more-projects-list');
+    
+    if (!moreProjectsList) return;
+    
+    try {
+        // Fetch all public repos
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=20`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch repositories');
+        }
+        
+        const repos = await response.json();
+        
+        // Clear loading message
+        moreProjectsList.innerHTML = '';
+        
+        // Filter out the selected repos that are already displayed in main projects
+        const selectedRepoNames = SELECTED_REPOS.map(r => r.name.toLowerCase());
+        const otherRepos = repos.filter(repo => 
+            !selectedRepoNames.includes(repo.name.toLowerCase()) &&
+            !repo.fork // Exclude forked repositories
+        );
+        
+        // Create mini cards for each repo
+        otherRepos.slice(0, 12).forEach(repo => {
+            const miniCard = createMiniProjectCard(repo);
+            moreProjectsList.appendChild(miniCard);
+        });
+        
+        // If no projects found
+        if (otherRepos.length === 0) {
+            moreProjectsList.innerHTML = '<div class="loading-small">No additional projects found</div>';
+        }
+        
+    } catch (error) {
+        console.error('Error fetching more projects:', error);
+        moreProjectsList.innerHTML = '<div class="loading-small">Error loading projects</div>';
+    }
+}
+
+function createMiniProjectCard(repo) {
+    const card = document.createElement('a');
+    card.className = 'project-mini-card';
+    card.href = repo.html_url;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+    
+    // Truncate description if too long
+    const description = repo.description || 'No description available';
+    const truncatedDesc = description.length > 100 ? description.substring(0, 100) + '...' : description;
+    
+    // Get primary language color
+    const languageColors = {
+        'JavaScript': '#f1e05a',
+        'Python': '#3572A5',
+        'Java': '#b07219',
+        'C++': '#f34b7d',
+        'C': '#555555',
+        'TypeScript': '#2b7489',
+        'HTML': '#e34c26',
+        'CSS': '#563d7c',
+        'Rust': '#dea584',
+        'Go': '#00ADD8',
+        'Ruby': '#701516',
+        'PHP': '#4F5D95',
+        'Swift': '#ffac45',
+        'Kotlin': '#F18E33'
+    };
+    
+    const languageColor = languageColors[repo.language] || 'var(--text-tertiary)';
+    
+    card.innerHTML = `
+        <div class="project-mini-header">
+            <h3 class="project-mini-title">${repo.name}</h3>
+            <span class="project-mini-icon">→</span>
+        </div>
+        <p class="project-mini-description">${truncatedDesc}</p>
+        <div class="project-mini-footer">
+            ${repo.language ? `
+                <span class="project-mini-language">
+                    <span class="language-dot" style="background: ${languageColor}"></span>
+                    ${repo.language}
+                </span>
+            ` : ''}
+            ${repo.stargazers_count > 0 ? `
+                <span class="project-mini-stars">
+                    ★ ${repo.stargazers_count}
+                </span>
+            ` : ''}
+        </div>
+    `;
+    
+    return card;
+}
+
+// Load more projects when DOM is ready
+document.addEventListener('DOMContentLoaded', fetchMoreProjects);
+
+// ============================================
 // CONSOLE MESSAGE
 // ============================================
 console.log('%c👋 Hi there!', 'font-size: 20px; font-weight: bold;');
