@@ -726,6 +726,129 @@ function createMiniProjectCard(repo) {
 document.addEventListener('DOMContentLoaded', fetchMoreProjects);
 
 // ============================================
+// WOW EFFECTS - SUBTLE MOUSE PARTICLE TRAIL
+// ============================================
+class ParticleTrail {
+    constructor() {
+        this.canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.mouse = { x: 0, y: 0 };
+        
+        this.setupCanvas();
+        this.addEventListeners();
+        this.animate();
+    }
+    
+    setupCanvas() {
+        this.canvas.style.position = 'fixed';
+        this.canvas.style.top = '0';
+        this.canvas.style.left = '0';
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
+        this.canvas.style.pointerEvents = 'none';
+        this.canvas.style.zIndex = '50';
+        document.body.appendChild(this.canvas);
+        
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
+    
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+    
+    addEventListeners() {
+        document.addEventListener('mousemove', (e) => {
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
+            
+            // Create only 1 particle on mouse move
+            this.particles.push(new Particle(this.mouse.x, this.mouse.y));
+        });
+    }
+    
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Update and draw particles
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            this.particles[i].update();
+            this.particles[i].draw(this.ctx);
+            
+            if (this.particles[i].life <= 0) {
+                this.particles.splice(i, 1);
+            }
+        }
+        
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.life = 1;
+        this.decay = 0.02;
+    }
+    
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life -= this.decay;
+        this.size *= 0.96;
+    }
+    
+    draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = this.life * 0.5;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+// Initialize particle trail on desktop only
+if (window.innerWidth > 768) {
+    window.addEventListener('load', () => {
+        new ParticleTrail();
+    });
+}
+
+// ============================================
+// WOW EFFECTS - ANIMATED GRADIENT TITLE
+// ============================================
+function initTitleEffect() {
+    const title = document.querySelector('.hero-title');
+    if (!title) return;
+    
+    // Split text into individual letters
+    const text = title.textContent;
+    title.innerHTML = '';
+    
+    text.split('').forEach((char, index) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.className = 'title-letter';
+        span.style.animationDelay = `${index * 0.05}s`;
+        if (char === ' ') {
+            span.style.marginRight = '0.5em';
+        }
+        title.appendChild(span);
+    });
+}
+
+// Initialize on load
+window.addEventListener('load', initTitleEffect);
+
+// ============================================
 // CONSOLE MESSAGE
 // ============================================
 console.log('%c👋 Hi there!', 'font-size: 20px; font-weight: bold;');

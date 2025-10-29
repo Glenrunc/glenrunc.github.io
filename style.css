@@ -1680,3 +1680,39 @@ section.visible {
         font-size: 0.85rem;
     }
 }
+
+/* ============================================
+   WOW EFFECTS - SUBTLE TITLE ANIMATION
+   ============================================ */
+
+.hero-title .title-letter {
+    display: inline-block;
+    color: #ffffff;
+    animation: fadeInLetter 0.8s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInLetter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Subtle hover effect on title */
+.hero-title:hover .title-letter {
+    animation: subtleGlow 0.3s ease forwards;
+}
+
+@keyframes subtleGlow {
+    0% {
+        text-shadow: none;
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+}
