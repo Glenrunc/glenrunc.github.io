@@ -249,7 +249,7 @@ const projectsGrid = document.getElementById('projects-grid');
 const SELECTED_REPOS = [
 
     {
-        name: " Hackathon_CTI_UQAC",
+        name: "Hackathon_CTI_UQAC",
         status: "finished",     // Options: "in-progress" or "finished"
         type: "personal",            // Options: "school" or "personal"
         image: null                // Optional: URL to project image or null
@@ -385,13 +385,13 @@ async function createProjectCard(repo, status, type, image) {
         if (readmeResponse.ok) {
             readmeContent = await readmeResponse.text();
             
-            // Convert Markdown to HTML
-            const htmlContent = convertMarkdownToHTML(readmeContent);
+            // Convert Markdown to HTML (pass repo name for image URL conversion)
+            const htmlContent = convertMarkdownToHTML(readmeContent, repo.name);
             
             // Check if README is long (more than 500 characters)
             const isLongReadme = readmeContent.length > 500;
             const previewHTML = isLongReadme 
-                ? convertMarkdownToHTML(readmeContent.substring(0, 500) + '...')
+                ? convertMarkdownToHTML(readmeContent.substring(0, 500) + '...', repo.name)
                 : htmlContent;
             
             if (isLongReadme) {
@@ -457,7 +457,7 @@ async function createProjectCard(repo, status, type, image) {
  * @param {string} markdown - Markdown text
  * @returns {string} - HTML text
  */
-function convertMarkdownToHTML(markdown) {
+function convertMarkdownToHTML(markdown, repoName = null) {
     let html = markdown;
     
     // Headers
@@ -478,6 +478,24 @@ function convertMarkdownToHTML(markdown) {
     
     // Inline code
     html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    // Images - Convert Markdown images to HTML with proper URL handling
+    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
+        let imageSrc = src;
+        
+        // Si c'est un chemin relatif, le convertir en URL GitHub raw
+        if (repoName && !src.startsWith('http')) {
+            // Enlever les ./ ou ../ du début
+            const cleanSrc = src.replace(/^\.\//, '').replace(/^\.\.\//, '');
+            imageSrc = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${repoName}/main/${cleanSrc}`;
+        }
+        // Si c'est déjà une URL GitHub (blob), la convertir en raw
+        else if (src.includes('github.com') && src.includes('/blob/')) {
+            imageSrc = src.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+        }
+        
+        return `<img src="${imageSrc}" alt="${alt}" loading="lazy" onerror="this.style.display='none'">`;
+    });
     
     // Links
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
