@@ -247,6 +247,13 @@ const projectsGrid = document.getElementById('projects-grid');
 // Add the exact repository names you want to display with their metadata
 // ============================================
 const SELECTED_REPOS = [
+
+    {
+        name: " Hackathon_CTI_UQAC",
+        status: "finished",     // Options: "in-progress" or "finished"
+        type: "personal",            // Options: "school" or "personal"
+        image: null                // Optional: URL to project image or null
+    },
     {
         name: "Hack-Compiler-Suite",
         status: "in-progress",     // Options: "in-progress" or "finished"
