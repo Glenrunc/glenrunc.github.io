@@ -249,6 +249,14 @@ const projectsGrid = document.getElementById('projects-grid');
 const SELECTED_REPOS = [
 
     {
+        name: "MI7_seg_impaint_deepfake",
+        status: "finished",     // Options: "in-progress" or "finished"
+        type: "personal",            // Options: "school" or "personal"
+        image: null   
+
+    },
+
+    {
         name: "Hackathon_CTI_UQAC",
         status: "finished",     // Options: "in-progress" or "finished"
         type: "personal",            // Options: "school" or "personal"
