@@ -1975,3 +1975,182 @@ section.visible {
     background: rgba(255, 255, 255, 0.2);
     color: var(--text-primary);
 }
+
+/* ============================================
+   HERO SUBTITLE & SEEKING STYLES
+   ============================================ */
+.hero-subtitle {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.hero-seeking {
+    font-size: 1.1rem;
+    color: rgba(100, 200, 150, 0.9);
+    font-weight: 400;
+    margin-top: 1.5rem;
+    padding: 0.8rem 1.2rem;
+    border-left: 3px solid rgba(100, 200, 150, 0.6);
+    background: rgba(100, 200, 150, 0.05);
+}
+
+/* ============================================
+   SYSTEMS ENGINEERING SKILLS SECTION
+   ============================================ */
+.skills-section {
+    background: var(--bg-secondary);
+}
+
+.skills-engineering-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.skill-eng-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.skill-eng-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-5px);
+}
+
+.skill-eng-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.skill-eng-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin-bottom: 0.8rem;
+}
+
+.skill-eng-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+    .skills-engineering-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .skills-engineering-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   PROJECT SECTIONS & METRICS (AnotherBrain)
+   ============================================ */
+.experience-highlight {
+    border-left: 3px solid rgba(100, 200, 150, 0.6);
+    padding-left: 1rem;
+}
+
+.project-section {
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.project-section:first-of-type {
+    border-top: none;
+}
+
+.project-section-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tech-badge {
+    background: rgba(100, 200, 150, 0.1);
+    color: rgba(100, 200, 150, 0.9);
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    border: 1px solid rgba(100, 200, 150, 0.3);
+    font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.metric-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.metric-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 200;
+    color: rgba(100, 200, 150, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   VIDEOS ANNEX SECTION (COMPACT)
+   ============================================ */
+.videos-annex {
+    padding: 5rem 0;
+    background: var(--bg-secondary);
+}
+
+.videos-compact {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.videos-compact .video-card {
+    transform: scale(0.9);
+    opacity: 0.8;
+}
+
+.videos-compact .video-card:hover {
+    transform: scale(0.95);
+    opacity: 1;
+}

@@ -247,40 +247,25 @@ const projectsGrid = document.getElementById('projects-grid');
 // Add the exact repository names you want to display with their metadata
 // ============================================
 const SELECTED_REPOS = [
-
+    // Main featured project - End-to-end video manipulation pipeline
     {
         name: "MI7_seg_impaint_deepfake",
-        status: "finished",     // Options: "in-progress" or "finished"
-        type: "personal",            // Options: "school" or "personal"
-        image: null   
-
-    },
-
-    {
-        name: "Hackathon_CTI_UQAC",
-        status: "finished",     // Options: "in-progress" or "finished"
-        type: "personal",            // Options: "school" or "personal"
-        image: null                // Optional: URL to project image or null
+        status: "finished",
+        type: "personal",
+        image: null,
+        // This project demonstrates: segmentation, inpainting, generative models, end-to-end pipeline
     },
     {
-        name: "Hack-Compiler-Suite",
-        status: "in-progress",     // Options: "in-progress" or "finished"
-        type: "personal",            // Options: "school" or "personal"
-        image: null                // Optional: URL to project image or null
-    },
-    // Add more projects here
-    {
-        name: 'Rasende_Roboter',
-        status: 'finished',
-        type: 'school',
-        image: 'assets/arbre.png'
+        name:"Hackathon_CTI_UQAC",
+        status: "finished",
+        type: "school",
+        image: null,
     },
     {
-        name: 'ConwayGame',
-        status: 'finished',
-        type: 'personnal',
-        image: 'assets/conway.png'
-    },
+        name:"Chatbot_UQAC",
+        status: "in-progress",
+        type: "school",
+        image: null,}
 ];
 
 /**
