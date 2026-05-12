@@ -124,6 +124,7 @@ html, body {
     width: 100%;
     height: 100%;
     display: block;
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='none' stroke='%2300ff88' stroke-width='1.3' opacity='0.9'><circle cx='12' cy='12' r='9'/><line x1='12' y1='2' x2='12' y2='8'/><line x1='12' y1='16' x2='12' y2='22'/><line x1='2' y1='12' x2='8' y2='12'/><line x1='16' y1='12' x2='22' y2='12'/></g><circle cx='12' cy='12' r='1.3' fill='%2300ff88'/></svg>") 12 12, crosshair;
 }
 
 #node-overlay {
@@ -191,6 +192,17 @@ html, body {
    NODE TYPES — DOT MARKERS
    ============================================ */
 
+.node-sun { cursor: default; }
+.node-sun .node-dot {
+    width: 16px; height: 16px;
+    border-color: #ffd87a;
+    background: rgba(255, 216, 122, 0.20);
+    box-shadow: 0 0 16px rgba(255, 216, 122, 0.55);
+    animation: identityPulse 3.5s ease-in-out infinite;
+}
+.node-sun .node-dot-name { font-size: 0.92rem; font-weight: 700; color: #ffd87a; letter-spacing: 0.04em; }
+.node-sun .node-dot-sub  { color: #c8a050; }
+
 .node-identity .node-dot {
     width: 14px; height: 14px;
     border-color: var(--accent-green);
@@ -222,6 +234,167 @@ html, body {
 
 .node-interest .node-dot { border-color: var(--accent-amber); background: rgba(255, 179, 71, 0.07); }
 .node-interest:hover .node-dot { box-shadow: 0 0 8px rgba(255, 179, 71, 0.4); }
+
+/* Rocket HUD — fixed top-center, monospace green, mission-control vibe */
+.rocket-hud {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    padding: 0.5rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--accent-green);
+    background: rgba(0, 12, 6, 0.78);
+    border: 1px solid rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 18px rgba(0, 255, 136, 0.18);
+    pointer-events: none;
+    line-height: 1.5;
+    min-width: 380px;
+    text-align: center;
+}
+.rocket-hud .rh-title { font-weight: 700; color: #a8ffd0; letter-spacing: 0.04em; }
+.rocket-hud .rh-line  { white-space: nowrap; }
+
+/* Rocket keymap card — bottom-left, live-pressed indicators */
+.rocket-keys {
+    position: fixed;
+    bottom: 70px;
+    left: 1.2rem;
+    z-index: 500;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+}
+.rocket-keys .rk-row {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+}
+.rocket-keys .rk {
+    width: 1.9rem;
+    height: 1.9rem;
+    line-height: 1.9rem;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    background: rgba(0, 12, 6, 0.7);
+    border: 1px solid rgba(0, 255, 136, 0.45);
+    border-radius: 3px;
+    transition: transform 80ms ease, background 80ms ease, color 80ms ease, box-shadow 80ms ease;
+}
+.rocket-keys .rk.active {
+    color: #001a08;
+    background: var(--accent-green);
+    box-shadow: 0 0 14px rgba(0, 255, 136, 0.75);
+    transform: scale(1.15);
+}
+.rocket-keys .rk-labels {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    gap: 0.45rem;
+    margin-top: 0.15rem;
+}
+.rocket-keys .rk-eject { margin-top: 0.5rem; }
+.rocket-keys .rk-eject .rk {
+    width: auto;
+    padding: 0 0.6rem;
+    color: var(--accent-amber);
+    border-color: rgba(255, 179, 71, 0.55);
+}
+.rocket-keys .rk-eject .rk.active {
+    color: #1a0a00;
+    background: var(--accent-amber);
+    box-shadow: 0 0 14px rgba(255, 179, 71, 0.75);
+}
+
+/* Landing banner — large, transient */
+.rocket-banner {
+    position: fixed;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -8px);
+    z-index: 700;
+    padding: 0.8rem 2rem;
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--accent-green);
+    background: rgba(0, 10, 4, 0.85);
+    border: 2px solid var(--accent-green);
+    box-shadow: 0 0 32px rgba(0, 255, 136, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.rocket-banner.visible { opacity: 1; transform: translate(-50%, 0); }
+
+/* Vim overlay — fake Neovim editor for `vim cv.tex` easter egg */
+.vim-overlay {
+    position: fixed; inset: 0; z-index: 8000;
+    background: #0a0e0a;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #c8e8c8;
+    display: flex; flex-direction: column;
+    transition: opacity 0.25s ease;
+}
+.vim-overlay.fade-out { opacity: 0; }
+.vim-buffer { flex: 1; overflow-y: auto; padding: 0.7rem 0.9rem; }
+.vim-line { white-space: pre; line-height: 1.45; }
+.vim-line .vim-no { display: inline-block; width: 3ch; margin-right: 1ch; color: #3a5440; text-align: right; }
+.vim-statusline {
+    display: flex; justify-content: space-between; gap: 1rem;
+    padding: 0.25rem 0.9rem;
+    background: #1a3a1a;
+    color: #d8f0d8;
+}
+.vim-statusline .vim-mode { color: #00ff88; font-weight: 700; }
+.vim-cmdline { padding: 0.25rem 0.9rem; color: #66996e; font-size: 0.78rem; }
+
+/* Konami matrix rain overlay */
+.matrix-rain {
+    position: fixed; inset: 0; z-index: 9000;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+.matrix-rain canvas { width: 100%; height: 100%; display: block; }
+.matrix-rain.fade-out { opacity: 0; }
+
+/* Sun-wrath banner — fades in from top-center after 7 sun clicks */
+.flare-banner {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    z-index: 600;
+    padding: 0.55rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    color: #ff7040;
+    background: rgba(20, 6, 4, 0.85);
+    border: 1px solid rgba(255, 80, 48, 0.55);
+    box-shadow: 0 0 24px rgba(255, 80, 48, 0.4);
+    opacity: 0;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(255, 80, 48, 0.7);
+}
+.flare-banner.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Pluto — secret type, faint dimmed gray dot, requires zoom-out to see */
+.node-secret .node-dot { width: 6px; height: 6px; border-color: rgba(180, 180, 180, 0.45); background: rgba(180, 180, 180, 0.10); }
+.node-secret .node-dot-name { font-size: 0.62rem; color: rgba(180, 180, 180, 0.75); }
+.node-secret .node-dot-sub  { color: rgba(140, 140, 140, 0.55); }
+.node-secret:hover .node-dot { box-shadow: 0 0 8px rgba(220, 220, 220, 0.5); }
 
 /* States */
 .node-dimmed { opacity: 0.1 !important; }
@@ -597,25 +770,6 @@ html, body {
 .zoom-reset { font-size: 0.85rem; }
 
 /* ============================================
-   VISITOR BADGE
-   ============================================ */
-.visitor-badge {
-    position: fixed;
-    bottom: calc(1.4rem + 36px);
-    right: 1.5rem;
-    z-index: 200;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-}
-
-.visitor-badge #visitor-label::before { content: '// '; color: var(--border-active); }
-.visitor-badge #visitor-count { color: var(--accent-cyan); }
-
-/* ============================================
    VIDEO MODAL
    ============================================ */
 .modal {
@@ -698,7 +852,6 @@ html, body {
     #detail-panel.open { transform: translateY(0); }
 
     .zoom-controls { bottom: 0.8rem; left: 1rem; }
-    .visitor-badge { bottom: 0.8rem; right: 1rem; }
 
     #term-bar { display: none; }
     #term-output-box { display: none !important; }
