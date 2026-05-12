@@ -1,0 +1,155 @@
+---
+import HeroCell       from '../components/cells/HeroCell.astro';
+import ExperienceCell from '../components/cells/ExperienceCell.astro';
+import SkillsCell     from '../components/cells/SkillsCell.astro';
+import ProjectsCell   from '../components/cells/ProjectsCell.astro';
+import VideosCell     from '../components/cells/VideosCell.astro';
+import ContactCell    from '../components/cells/ContactCell.astro';
+import VideoModal     from '../components/VideoModal.astro';
+import '../styles/global.css';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mattéo Pourcine — AI Systems Engineer">
+  <title>Mattéo Pourcine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="bento-grid">
+    <HeroCell />
+    <ExperienceCell />
+    <SkillsCell />
+    <ProjectsCell />
+    <VideosCell />
+    <ContactCell />
+  </div>
+
+  <!-- Expand overlay -->
+  <div id="expand-overlay" class="expand-overlay" hidden aria-modal="true" role="dialog">
+    <button class="overlay-close" id="overlay-close" aria-label="Close">×</button>
+    <div class="overlay-inner">
+      <div id="overlay-content" class="overlay-content"></div>
+    </div>
+  </div>
+
+  <VideoModal />
+
+  <script>
+    // ===== LANGUAGE =====
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    function updateLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      applyLanguage(document);
+      const overlay = document.getElementById('overlay-content');
+      if (overlay && overlay.children.length) applyLanguage(overlay);
+    }
+
+    function applyLanguage(root) {
+      root.querySelectorAll('[data-en], [data-fr]').forEach(el => {
+        const text = el.dataset[currentLang];
+        if (text !== undefined) el.textContent = text;
+      });
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+        updateLanguage(lang);
+      });
+    });
+
+    // Hero CTA scroll to projects
+    document.querySelector('.hero-cta')?.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector('.cell-projects')?.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Apply saved language on load
+    if (currentLang === 'fr') {
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === 'fr'));
+      applyLanguage(document);
+    }
+
+    // ===== BENTO EXPAND =====
+    const overlay    = document.getElementById('expand-overlay');
+    const overlayContent = document.getElementById('overlay-content');
+    const overlayClose   = document.getElementById('overlay-close');
+
+    document.querySelectorAll('[data-expandable]').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const tpl = cell.querySelector('template.cell-full');
+        if (!tpl) return;
+        overlayContent.innerHTML = '';
+        overlayContent.appendChild(tpl.content.cloneNode(true));
+        applyLanguage(overlayContent);
+        overlay.hidden = false;
+        requestAnimationFrame(() => overlay.classList.add('visible'));
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeOverlay() {
+      overlay.classList.remove('visible');
+      overlay.addEventListener('transitionend', () => {
+        overlay.hidden = true;
+        overlayContent.innerHTML = '';
+        document.body.style.overflow = '';
+      }, { once: true });
+    }
+
+    overlayClose?.addEventListener('click', closeOverlay);
+    overlay?.addEventListener('click', e => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) closeOverlay(); });
+
+    // ===== VIDEO MODAL =====
+    const videoModal = document.getElementById('video-modal');
+    const videoIframe = document.getElementById('video-iframe');
+    const videoModalClose = document.getElementById('video-modal-close');
+
+    document.querySelectorAll('.video-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const url = card.dataset.video;
+        if (!url) return;
+        const id = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/)?.[1];
+        if (!id) return;
+        videoIframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+        videoModal.hidden = false;
+        requestAnimationFrame(() => videoModal.classList.add('visible'));
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeVideoModal() {
+      videoModal.classList.remove('visible');
+      videoModal.addEventListener('transitionend', () => {
+        videoModal.hidden = true;
+        videoIframe.src = '';
+        document.body.style.overflow = '';
+      }, { once: true });
+    }
+
+    videoModalClose?.addEventListener('click', closeVideoModal);
+    videoModal?.addEventListener('click', e => { if (e.target === videoModal) closeVideoModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !videoModal.hidden) closeVideoModal(); });
+
+    // ===== VISITOR COUNTER =====
+    const counterEl = document.getElementById('visitor-count');
+    if (counterEl) {
+      fetch('https://api.countapi.xyz/hit/portfolio-matteo-pourcine/visits')
+        .then(r => r.json())
+        .then(d => { counterEl.textContent = d.value?.toLocaleString() ?? '—'; })
+        .catch(() => { counterEl.textContent = '—'; });
+    }
+  </script>
+
+</body>
+</html>

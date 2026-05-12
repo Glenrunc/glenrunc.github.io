@@ -1,0 +1,70 @@
+---
+---
+<div class="bento-cell cell-projects">
+  <div class="cell-label">
+    <span data-en="04 / PROJECTS" data-fr="04 / PROJETS">04 / PROJECTS</span>
+  </div>
+  <div id="projects-grid" class="projects-grid">
+    <p class="projects-loading" data-en="Loading..." data-fr="Chargement...">Loading...</p>
+  </div>
+</div>
+
+<script>
+const GITHUB_USER = 'Glenrunc';
+const SELECTED_REPOS = [
+  { name: 'MI7_seg_impaint_deepfake', status: 'finished', type: 'school' },
+  { name: 'Hackathon_CTI_UQAC',       status: 'finished', type: 'school' },
+  { name: 'Chatbot_UQAC',             status: 'finished', type: 'school' },
+];
+
+async function loadProjects() {
+  const grid = document.getElementById('projects-grid');
+  if (!grid) return;
+
+  try {
+    const cards = await Promise.all(
+      SELECTED_REPOS.map(repo => fetchRepo(repo))
+    );
+    grid.innerHTML = '';
+    cards.forEach(card => { if (card) grid.appendChild(card); });
+  } catch {
+    grid.innerHTML = '<p class="projects-loading">Failed to load projects.</p>';
+  }
+}
+
+async function fetchRepo(repo) {
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo.name}`);
+  if (!res.ok) return null;
+  const data = await res.json();
+
+  let desc = data.description || '';
+  if (!desc) {
+    try {
+      const readmeRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo.name}/readme`);
+      if (readmeRes.ok) {
+        const readmeData = await readmeRes.json();
+        const text = atob(readmeData.content.replace(/\n/g, ''));
+        desc = text.replace(/#+\s.*\n?/g, '').replace(/\*\*/g, '').trim().slice(0, 200);
+      }
+    } catch { /* skip */ }
+  }
+
+  const card = document.createElement('div');
+  card.className = 'project-card';
+  card.innerHTML = `
+    <div class="project-card-name">${data.name.replace(/_/g, ' ')}</div>
+    <div class="project-card-badges">
+      <span class="badge badge-${repo.status === 'finished' ? 'finished' : 'progress'}">${repo.status}</span>
+      <span class="badge badge-${repo.type}">${repo.type}</span>
+    </div>
+    <p class="project-card-desc">${desc || '—'}</p>
+    <div class="project-card-meta">
+      <span>${data.language || ''}</span>
+      <a class="project-card-link" href="${data.html_url}" target="_blank" rel="noopener">github ↗</a>
+    </div>
+  `;
+  return card;
+}
+
+loadProjects();
+</script>

@@ -139,3 +139,5 @@ assets/videos/
 *.backup
 *.bak
 *.old
+
+CLAUDE.md

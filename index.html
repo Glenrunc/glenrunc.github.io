@@ -2,454 +2,84 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portfolio of Glen Morton - Creative Developer">
-    <meta name="author" content="Glen Morton">
-    <title>Glen Morton</title>
-    
-    <!-- Google Fonts -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Portfolio of Mattéo Pourcine — AI Systems Engineer, computer vision and deep learning.">
+    <meta name="author" content="Mattéo Pourcine">
+    <title>Mattéo Pourcine | AI Systems Engineer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Stylesheet -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <!-- Fixed Header Navigation -->
+
+    <!-- Fixed header -->
     <header class="header">
-        <div class="container">
-                <!-- Language Control -->
-                <div class="controls">
-                    <button id="lang-toggle" class="control-btn" aria-label="Toggle language">
-                        <span class="lang-text">EN</span>
-                    </button>
-                </div>
-                <nav class="nav">
-                    <a href="#home" class="nav-link" data-en="Home" data-fr="Accueil">Home</a>
-                    <a href="#experience" class="nav-link" data-en="Experience" data-fr="Expérience">Experience</a>
-                    <a href="#skills" class="nav-link" data-en="Skills" data-fr="Compétences">Skills</a>
-                    <a href="#projects" class="nav-link" data-en="Projects" data-fr="Projets">Projects</a>
-                    <a href="#contact" class="nav-link" data-en="Contact" data-fr="Contact">Contact</a>
-                </nav>
+        <div class="header-left">
+            <span class="header-name">Mattéo Pourcine</span>
+            <span class="header-sep">//</span>
+            <span class="header-role" id="header-role">AI Systems Engineer</span>
+        </div>
+        <div class="header-right">
+            <span class="header-hint" id="header-hint">click nodes to explore</span>
+            <button id="lang-toggle" class="control-btn" aria-label="Toggle language">
+                <span class="lang-text">EN</span>
+            </button>
         </div>
     </header>
 
-    <!-- Hero Section with Game of Life Background -->
-    <section id="home" class="hero">
-        <canvas id="game-of-life"></canvas>
-        <div class="hero-overlay"></div>
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Mattéo Pourcine</h1>
-                <p class="hero-subtitle"
-                   data-en="AI Systems Engineer"
-                   data-fr="Ingénieur IA orienté systèmes">
-                   AI Systems Engineer
-                </p>
-                <p class="hero-bio" 
-                   data-en="Final-year engineering student (UTBM / UQAC), specialized in computer vision and deep learning. Focus: transforming research work into robust, optimized, and deployable systems."
-                   data-fr="Étudiant ingénieur en fin de cursus (UTBM / UQAC), spécialisé en vision par ordinateur et deep learning. Axe principal : transformer des travaux de recherche en systèmes robustes, optimisés et déployables.">
-                   Final-year engineering student (UTBM / UQAC), specialized in computer vision and deep learning. Focus: transforming research work into robust, optimized, and deployable systems.
-                </p>
-                <p class="hero-seeking"
-                   data-en="Seeking a 6-month internship in applied R&D or ML engineering (September 2026)."
-                   data-fr="Recherche un stage de 6 mois en R&D appliquée ou ML engineering (septembre 2026).">
-                   Seeking a 6-month internship in applied R&D or ML engineering (September 2026).
-                </p>
-                <a href="#experience" class="cta-button" data-en="See My Work" data-fr="Voir mes projets"><span>See My Work</span></a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Professional Experience Section -->
-    <section id="experience" class="experience-section">
-        <div class="container">
-            <h2 class="section-title" data-en="Professional and Educational Experience" data-fr="Expérience Professionnelle et Académique">Professional and Educational Experience</h2>
-            <p class="section-subtitle" data-en="My journey through academia and industry" data-fr="Mon parcours académique et professionnel">My journey through academia and industry</p>
-            
-            <div class="experience-timeline">
-                <!-- Experience Item 1: Double Degree Canada -->
-                <div class="experience-item">
-                    <div class="experience-date">
-                        <span data-en="sept 2025 - aug 2026" data-fr="sept 2025 - août 2026">sept 2025 - aug 2026</span>
-                    </div>
-                    <div class="experience-content">
-                        <h3 class="experience-title">
-                            <span data-en="Double Degree - Master in Artificial Intelligence" data-fr="Double Diplôme - Master en Intelligence Artificielle">Double Degree - Master in Artificial Intelligence</span>
-                            <span class="country-flag">&#127464;&#127462;</span>
-                        </h3>
-                        <p class="experience-company" data-en="University of Quebec at Chicoutimi (UQAC)" data-fr="Université du Québec à Chicoutimi (UQAC)">University of Quebec at Chicoutimi (UQAC)</p>
-                        
-                        <p class="experience-description" 
-                           data-en="Advanced master's program in artificial intelligence with focus on cutting-edge techniques:"
-                           data-fr="Programme de master avancé en intelligence artificielle avec focus sur les techniques de pointe :">
-                           Advanced master's program in artificial intelligence with focus on cutting-edge techniques:
-                        </p>
-                        <ul class="experience-list">
-                            <li data-en="Deep Neural Networks: architectures and optimization" data-fr="Réseaux de Neurones Profonds : architectures et optimisation">Deep Neural Networks: architectures and optimization</li>
-                            <li data-en="Metaheuristics: genetic algorithms, particle swarm, simulated annealing" data-fr="Métaheuristiques : algorithmes génétiques, essaims particulaires, recuit simulé">Metaheuristics: genetic algorithms, particle swarm, simulated annealing</li>
-                            <li data-en="Generative AI: GANs, VAEs, Diffusion Models" data-fr="IA Générative : GANs, VAEs, Modèles de Diffusion">Generative AI: GANs, VAEs, Diffusion Models</li>
-                            <li data-en="Teaching Assistant: supervised practical sessions for introductory C++ programming course" data-fr="Auxiliaire d'enseignement : encadrement de travaux pratiques pour un cours d'initiation au C++">Teaching Assistant: supervised practical sessions for introductory C++ programming course</li>
-                            <!-- <li data-en="Natural Language Processing & Transformers" data-fr="Traitement du Langage Naturel & Transformers">Natural Language Processing & Transformers</li> -->
-                            <!-- <li data-en="Reinforcement Learning & Decision Making" data-fr="Apprentissage par Renforcement & Prise de Décision">Reinforcement Learning & Decision Making</li> -->
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Experience Item 2: Research Intern - AnotherBrain -->
-                <div class="experience-item experience-highlight">
-                    <div class="experience-date">
-                        <span data-en="sept 2024 - feb 2025" data-fr="sept 2024 - fev 2025">sept 2024 - feb 2025</span>
-                    </div>
-                    <div class="experience-content">
-                        <h3 class="experience-title">
-                            <span data-en="Research Intern — Bio-inspired Motion Detection" data-fr="Stagiaire Recherche — Détection de mouvement bio-inspirée">Research Intern — Bio-inspired Motion Detection</span>
-                            <span class="country-flag">&#127467;&#127479;</span>
-                        </h3>
-                        <p class="experience-company">AnotherBrain</p>
-                        
-                        <!-- Problem Statement -->
-                        <div class="project-section">
-                            <h4 class="project-section-title" data-en="Problem" data-fr="Problème">Problem</h4>
-                            <p class="experience-description" 
-                               data-en="Segment moving objects in video streams without deep neural networks, for low-power embedded systems (neuromorphic computing)."
-                               data-fr="Segmenter des objets en mouvement dans un flux vidéo sans réseaux de neurones profonds, pour des systèmes embarqués à faible consommation (neuromorphique).">
-                               Segment moving objects in video streams without deep neural networks, for low-power embedded systems (neuromorphic computing).
-                            </p>
-                            <p class="experience-description" 
-                               data-en="Why naive approaches fail: background subtraction fails on dynamic backgrounds; deep detectors (YOLO, Mask R-CNN) too expensive for edge; frame difference generates excessive false positives."
-                               data-fr="Pourquoi les approches naïves échouent : la soustraction de fond échoue sur les fonds dynamiques ; les détecteurs deep (YOLO, Mask R-CNN) trop coûteux pour l'edge ; la différence d'images génère trop de faux positifs.">
-                               Why naive approaches fail: background subtraction fails on dynamic backgrounds; deep detectors (YOLO, Mask R-CNN) too expensive for edge; frame difference generates excessive false positives.
-                            </p>
-                        </div>
-
-                        <!-- Technical Approach -->
-                        <div class="project-section">
-                            <h4 class="project-section-title" data-en="Technical Approach" data-fr="Approche technique">Technical Approach</h4>
-                            <p class="experience-description" 
-                               data-en="Hypothesis: local entropy measured over a spatio-temporal window isolates moving regions without supervised learning. Based on Ma & Zhang (STEI, 2001) and Guo Jing (DSTEI, 2004)."
-                               data-fr="Hypothèse : l'entropie locale mesurée sur une fenêtre spatio-temporelle permet d'isoler les régions en mouvement sans apprentissage supervisé. Basé sur Ma & Zhang (STEI, 2001) et Guo Jing (DSTEI, 2004).">
-                               Hypothesis: local entropy measured over a spatio-temporal window isolates moving regions without supervised learning. Based on Ma & Zhang (STEI, 2001) and Guo Jing (DSTEI, 2004).
-                            </p>
-                        </div>
-
-                        <!-- Implementation -->
-                        <div class="project-section">
-                            <h4 class="project-section-title" data-en="Implementation" data-fr="Implémentation">Implementation</h4>
-                            <div class="tech-stack">
-                                <span class="tech-badge">Python</span>
-                                <span class="tech-badge">CuPy (GPU kernels)</span>
-                                <span class="tech-badge">cProfile / nvprof</span>
-                            </div>
-                            <p class="experience-description" 
-                               data-en="Constraints: real-time target (>15 FPS on mid-range GPU), limited memory (no full history storage)."
-                               data-fr="Contraintes : temps réel visé (>15 FPS sur GPU mid-range), mémoire limitée (pas de stockage de l'historique complet).">
-                               Constraints: real-time target (>15 FPS on mid-range GPU), limited memory (no full history storage).
-                            </p>
-                        </div>
-                        
-                        <!-- Results -->
-                        <div class="project-section">
-                            <h4 class="project-section-title" data-en="Results" data-fr="Résultats">Results</h4>
-                            <div class="metrics-grid">
-                                <div class="metric-item">
-                                    <span class="metric-value">×12</span>
-                                    <span class="metric-label" data-en="GPU vs CPU speedup" data-fr="Speedup GPU vs CPU">GPU vs CPU speedup</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-value">~0.72</span>
-                                    <span class="metric-label" data-en="IoU (multi-object)" data-fr="IoU (multi-objets)">IoU (multi-object)</span>
-                                </div>
-                                <div class="metric-item">
-                                    <span class="metric-value">45ms</span>
-                                    <span class="metric-label" data-en="Latency/frame (RTX 2080 Ti)" data-fr="Latence/frame (RTX 2080 Ti)">Latency/frame (RTX 2080 Ti)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Experience Images Gallery -->
-                        <div class="experience-images">
-                            <div class="experience-images-wrapper">
-                                <img src="./assets/fram3.png" alt="Motion Detection Frame 1">
-                                <img src="./assets/frame33.png" alt="Motion Detection Frame 2">
-                            </div>
-                            <p class="image-caption" 
-                               data-en="Segmentation of multiple objects in motion without deep learning (bio-inspired approach)"
-                               data-fr="Segmentation de plusieurs objets en mouvement sans deep learning (approche bio-inspirée)">
-                               Segmentation of multiple objects in motion without deep learning (bio-inspired approach)
-                            </p>
-                        </div>
-
-                        <!-- Engineering Decisions -->
-                        <div class="project-section">
-                            <h4 class="project-section-title" data-en="Engineering Decisions" data-fr="Décisions d'ingénierie">Engineering Decisions</h4>
-                            <ul class="experience-list">
-                                <li data-en="Precision vs latency: reduced temporal window (5→3 frames) to meet latency budget"
-                                    data-fr="Précision vs latence : réduction de la fenêtre temporelle (5→3 frames) pour tenir le budget latence">
-                                    Precision vs latency: reduced temporal window (5→3 frames) to meet latency budget
-                                </li>
-                                <li data-en="Memory vs quality: sliding block computation instead of full image processing"
-                                    data-fr="Mémoire vs qualité : calcul par blocs glissants plutôt que sur l'image entière">
-                                    Memory vs quality: sliding block computation instead of full image processing
-                                </li>
-                                <li data-en="Fixed parameters vs adaptive: 20% latency gain with fixed params"
-                                    data-fr="Paramètres fixes vs adaptatifs : gain de 20% en latence avec paramètres fixes">
-                                    Fixed parameters vs adaptive: 20% latency gain with fixed params
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="experience-images">
-                            <div class="experience-images-wrapper">
-                                <img src="./assets/pipe_frame73.png" alt="Feature extraction">
-                            </div>
-                            <p class="image-caption" 
-                               data-en="Human feature extraction (bio-inspired algorithm)"
-                               data-fr="Extraction de caractéristiques d'un humain (algorithme bio-inspiré)">
-                               Human feature extraction (bio-inspired algorithm)
-                            </p>
-                        </div>
-
-                        <!-- What I'd do differently -->
-                        <div class="project-section">
-                            <h4 class="project-section-title" data-en="Industrial Context Improvements" data-fr="Améliorations en contexte industriel">Industrial Context Improvements</h4>
-                            <ul class="experience-list">
-                                <li data-en="Automated benchmark with CI/CD for performance regression detection"
-                                    data-fr="Benchmark automatisé avec CI/CD pour détecter les régressions de performance">
-                                    Automated benchmark with CI/CD for performance regression detection
-                                </li>
-                                <li data-en="More systematic hyperparameter tuning for temporal window size"
-                                    data-fr="Tuning plus systématique des hyperparamètres pour la taille de fenêtre temporelle">
-                                    More systematic hyperparameter tuning for temporal window size
-                                </li>
-                                <li data-en="Quantitative comparison with classical background subtraction methods (MOG2, KNN)"
-                                    data-fr="Comparaison quantitative avec les méthodes classiques de soustraction de fond (MOG2, KNN)">
-                                    Quantitative comparison with classical background subtraction methods (MOG2, KNN)
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Experience Item 3: Erasmus Exchange -->
-                <div class="experience-item">
-                    <div class="experience-date">
-                        <span data-en="feb 2023 - jul 2023" data-fr="fev 2023 - juil 2023">feb 2023 - jul 2023</span>
-                    </div>
-                    <div class="experience-content">
-                        <h3 class="experience-title">
-                            <span data-en="Erasmus Exchange Student" data-fr="Étudiant Erasmus">Erasmus Exchange Student</span>
-                            <span class="country-flag">&#127477;&#127473;</span>
-                        </h3>
-                        <p class="experience-company">AGH University of Science and Technology, Kraków</p>
-                        
-                        <p class="experience-description" 
-                           data-en="5-month international exchange focusing on medical imaging and biometrics:"
-                           data-fr="Échange international de 5 mois axé sur l'imagerie médicale et la biométrie :">
-                           5-month international exchange focusing on medical imaging and biometrics:
-                        </p>
-                        <ul class="experience-list">
-                            <li data-en="Medical Image Analysis using Deep Learning" data-fr="Analyse d'Images Médicales par Deep Learning">Medical Image Analysis using Deep Learning</li>
-                            <li data-en="Convolutional Neural Networks (CNN) for image classification" data-fr="Réseaux de Neurones Convolutifs (CNN) pour la classification d'images">Convolutional Neural Networks (CNN) for image classification</li>
-                            <li data-en="Autoencoders for feature extraction and dimensionality reduction" data-fr="Autoencodeurs pour l'extraction de caractéristiques et la réduction de dimensionnalité">Autoencoders for feature extraction and dimensionality reduction</li>
-                            <li data-en="Generative models for medical image synthesis" data-fr="Modèles génératifs pour la synthèse d'images médicales">Generative models for medical image synthesis</li>
-                            <li data-en="Biometric Systems & Authentication" data-fr="Systèmes Biométriques & Authentification">Biometric Systems & Authentication</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Experience Item 4: Engineering Student -->
-                <div class="experience-item">
-                    <div class="experience-date">
-                        <span data-en="2021 - 2026" data-fr="2021 - 2026">2021 - 2026</span>
-                    </div>
-                    <div class="experience-content">
-                        <h3 class="experience-title">
-                            <span data-en="Engineering Student in Computer Science" data-fr="Étudiant Ingénieur en Informatique">Engineering Student in Computer Science</span>
-                            <span class="country-flag">&#127467;&#127479;</span>
-                        </h3>
-                        <p class="experience-company" data-en="Virtual Worlds & Artificial Vision" data-fr="Mondes Virtuels & Vision Artificielle">Virtual Worlds & Artificial Vision</p>
-                        
-                        <p class="experience-description" 
-                           data-en="Comprehensive computer science engineering curriculum with specialization in virtual worlds and artificial vision:"
-                           data-fr="Formation complète en ingénierie informatique avec spécialisation en mondes virtuels et vision artificielle :">
-                           Comprehensive computer science engineering curriculum with specialization in virtual worlds and artificial vision:
-                        </p>
-                        <ul class="experience-list">
-                            <li data-en="Linear Algebra & Mathematical Analysis" data-fr="Algèbre Linéaire & Analyse Mathématique">Linear Algebra & Mathematical Analysis</li>
-                            <li data-en="Object-Oriented Programming" data-fr="Programmation Orientée Objet">Object-Oriented Programming</li>
-                            <li data-en="Fundamentals of Artificial Intelligence" data-fr="Fondamentaux de l'Intelligence Artificielle">Fundamentals of Artificial Intelligence</li>
-                            <li data-en="Computer Vision & Image Processing" data-fr="Vision par Ordinateur & Traitement d'Images">Computer Vision & Image Processing</li>
-                            <li data-en="Virtual Reality & 3D Graphics" data-fr="Réalité Virtuelle & Graphisme 3D">Virtual Reality & 3D Graphics</li>
-                            <li data-en="Student Tutor: provided academic support and mentoring to fellow students" data-fr="Tuteur étudiant : fourni soutien académique et mentorat aux autres étudiants">Student Tutor: provided academic support and mentoring to fellow students</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Systems Engineering Skills Section -->
-    <section id="skills" class="skills-section">
-        <div class="container">
-            <h2 class="section-title" data-en="Systems & Engineering Skills" data-fr="Compétences Systèmes & Ingénierie">Systems & Engineering Skills</h2>
-            <p class="section-subtitle" data-en="Beyond algorithms: deployment constraints, optimization, rigor" data-fr="Au-delà des algorithmes : contraintes de déploiement, optimisation, rigueur">Beyond algorithms: deployment constraints, optimization, rigor</p>
-            
-            <div class="skills-engineering-grid">
-                <div class="skill-eng-card">
-                    <div class="skill-eng-icon">⚡</div>
-                    <h3 class="skill-eng-title" data-en="Profiling & Optimization" data-fr="Profilage & Optimisation">Profiling & Optimization</h3>
-                    <p class="skill-eng-description" 
-                       data-en="cProfile, nvprof, CuPy for bottleneck identification. ×12 measured speedup on AnotherBrain project."
-                       data-fr="cProfile, nvprof, CuPy pour identifier les goulots d'étranglement. Speedup ×12 mesuré sur le projet AnotherBrain.">
-                       cProfile, nvprof, CuPy for bottleneck identification. ×12 measured speedup on AnotherBrain project.
-                    </p>
-                </div>
-                
-                <div class="skill-eng-card">
-                    <div class="skill-eng-icon">📦</div>
-                    <h3 class="skill-eng-title" data-en="Deployment Constraints" data-fr="Contraintes de Déploiement">Deployment Constraints</h3>
-                    <p class="skill-eng-description" 
-                       data-en="Experience with real-time constraints (~15 FPS) and limited memory. Awareness of dev vs production gaps."
-                       data-fr="Expérience avec contraintes temps réel (~15 FPS) et mémoire limitée. Conscience des différences dev/production.">
-                       Experience with real-time constraints (~15 FPS) and limited memory. Awareness of dev vs production gaps.
-                    </p>
-                </div>
-                
-                <div class="skill-eng-card">
-                    <div class="skill-eng-icon">📚</div>
-                    <h3 class="skill-eng-title" data-en="Scientific Rigor" data-fr="Rigueur Scientifique">Scientific Rigor</h3>
-                    <p class="skill-eng-description" 
-                       data-en="Faithful implementation of research papers (STEI, DSTEI). Systematic comparison with published results. CSO collaboration for hypothesis validation."
-                       data-fr="Implémentation fidèle d'articles de recherche (STEI, DSTEI). Comparaison systématique avec les résultats publiés. Collaboration avec CSO pour valider les hypothèses.">
-                       Faithful implementation of research papers (STEI, DSTEI). Systematic comparison with published results. CSO collaboration for hypothesis validation.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- GitHub Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title" data-en="Projects" data-fr="Projets">Projects</h2>
-            <p class="section-subtitle" data-en="Explore my recent work" data-fr="Découvrez mes travaux récents">Explore my recent work</p>
-            <div id="projects-grid" class="projects-grid">
-                <!-- Projects will be dynamically loaded here -->
-                <div class="loading" data-en="Loading projects..." data-fr="Chargement des projets...">Loading projects...</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Other Interests Section (Video) -->
-    <section id="videos" class="videos-annex">
-        <div class="container">
-            <h2 class="section-title" data-en="Other Interests" data-fr="Autres Intérêts">Other Interests</h2>
-            <p class="section-subtitle" 
-               data-en="Scientific documentary creation (side project)"
-               data-fr="Création de documentaires scientifiques (projet annexe)">Scientific documentary creation (side project)
-</p>
-            <div class="videos-grid videos-compact">
-                <!-- Video Thumbnail 1 -->
-                <div class="video-card" data-video="https://www.youtube.com/watch?v=DI0o6LZMoyY">
-                    <div class="video-thumbnail">
-                        <img src="./assets/holweck.png" alt="Video Project 1">
-                        <div class="play-button">▶</div>
-                    </div>
-                    <div class="video-info">
-                        <h3 class="video-title">Quantum Entanglement: A Scientific History</h3>
-                        <p class="video-description">A conversation with a mathematician whose work focuses on the geometry of quantum mechanics, shedding new light on the history and nature of "spooky action at a distance."</p>
-                    </div>
-                </div>
-                
-                <!-- Video Thumbnail 2 -->
-                <div class="video-card" data-video="https://www.youtube.com/watch?v=sFokYP5BF4M">
-                    <div class="video-thumbnail">
-                        <img src="./assets/travel.png" alt="Video Project 2">
-                        <div class="play-button">▶</div>
-                    </div>
-                    <div class="video-info">
-                        <h3 class="video-title">Traveler's diary</h3>
-                        <p class="video-description">Video is my medium for preserving the essence of the places I explore.</p>
-                    </div>
-                </div>
-                              
-            </div>
-        </div>
-    </section>
-
-    <!-- More Projects Section - Horizontal Scroll -->
-    <section id="more-projects" class="more-projects">
-        <div class="container">
-            <h2 class="section-title" data-en="More Projects" data-fr="Autres Projets">More Projects</h2>
-            <p class="section-subtitle" data-en="Other projects from my GitHub" data-fr="Autres projets de mon GitHub">Other projects from my GitHub</p>
-            
-            <div class="projects-scroll-container">
-                <div id="more-projects-list" class="projects-scroll">
-                    <!-- Projects will be dynamically loaded here -->
-                    <div class="loading-small" data-en="Loading..." data-fr="Chargement...">Loading...</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title" data-en="Get in Touch" data-fr="Me Contacter">Get in Touch</h2>
-            <div class="contact-content">
-                <p class="contact-text" 
-                   data-en="I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions."
-                   data-fr="Je suis toujours ouvert à discuter de nouveaux projets, d'idées créatives ou d'opportunités de faire partie de vos visions.">
-                    I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
-                </p>
-                <div class="contact-info">
-                    <a href="mailto:pourcinematteo@gmail.com" class="contact-link">
-                        <span class="contact-icon">✉</span>
-                        pourcinematteo@gmail.com
-                    </a>
-                </div>
-                <div class="social-links">
-                    <a href="https://github.com/Glenrunc" target="_blank" class="social-link" aria-label="GitHub">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.linkedin.com/in/matt%C3%A9o-p-129b35220/" target="_blank" class="social-link" aria-label="LinkedIn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2025 Glen Morton. All rights reserved.</p>
-                <div class="visitor-counter">
-                    <span class="counter-label" data-en="Visitors" data-fr="Visiteurs">Visitors</span>
-                    <span class="counter-value" id="visitor-count">—</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Video Modal -->
-    <div id="video-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <div class="video-wrapper">
-                <iframe id="video-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<!-- Graph viewport -->
+    <div id="graph-container">
+        <div id="tilt-wrapper">
+            <div id="graph-world">
+                <svg id="edges-layer" xmlns="http://www.w3.org/2000/svg"></svg>
+                <!-- Nodes injected by JS -->
             </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- Detail panel (slides in from right) -->
+    <aside id="detail-panel">
+        <div class="panel-header">
+            <span class="panel-path" id="panel-path">~/portfolio</span>
+            <button class="panel-close" id="panel-close">[×]</button>
+        </div>
+        <div class="panel-body" id="panel-body"></div>
+    </aside>
+
+    <!-- Zoom controls -->
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoom-in" title="Zoom in">+</button>
+        <button class="zoom-btn" id="zoom-out" title="Zoom out">−</button>
+        <button class="zoom-btn zoom-reset" id="zoom-reset" title="Reset view">⌂</button>
+    </div>
+
+    <!-- Visitor counter -->
+    <div class="visitor-badge">
+        <span id="visitor-label">visitors</span>
+        <span id="visitor-count">—</span>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-close">[×]</span>
+            <div class="video-wrapper">
+                <iframe id="video-iframe" src="" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terminal bar -->
+    <div id="term-output-box"></div>
+    <div id="term-bar">
+        <span class="term-ps1">matteo@portfolio:~$</span>
+        <span id="term-display"></span><span class="term-cursor">_</span>
+        <input id="term-input" type="text" autocomplete="off" spellcheck="false" aria-label="terminal">
+    </div>
+
     <script src="./script.js"></script>
 </body>
 </html>
