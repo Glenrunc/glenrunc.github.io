@@ -28,14 +28,10 @@
         </div>
     </header>
 
-<!-- Graph viewport -->
+<!-- Globe viewport -->
     <div id="graph-container">
-        <div id="tilt-wrapper">
-            <div id="graph-world">
-                <svg id="edges-layer" xmlns="http://www.w3.org/2000/svg"></svg>
-                <!-- Nodes injected by JS -->
-            </div>
-        </div>
+        <canvas id="globe-canvas"></canvas>
+        <div id="node-overlay"></div>
     </div>
 
     <!-- Detail panel (slides in from right) -->
@@ -80,6 +76,9 @@
         <input id="term-input" type="text" autocomplete="off" spellcheck="false" aria-label="terminal">
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>

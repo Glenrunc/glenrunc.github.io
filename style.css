@@ -108,44 +108,28 @@ html, body {
 
 
 /* ============================================
-   GRAPH CONTAINER & WORLD
+   GLOBE CONTAINER & OVERLAY
    ============================================ */
 #graph-container {
     position: fixed;
     inset: 0;
-    top: 44px; /* below header */
+    top: 44px;
     z-index: 1;
     overflow: hidden;
-    cursor: grab;
-    perspective: 1200px;
-    perspective-origin: 50% 50%;
 }
 
-#graph-container.dragging {
-    cursor: grabbing;
-}
-
-#tilt-wrapper {
+#globe-canvas {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    transform-origin: 50% 50%;
-    transition: transform 0.15s ease-out;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
-#graph-world {
+#node-overlay {
     position: absolute;
-    width: 3000px;
-    height: 2200px;
-    transform-origin: 0 0;
-}
-
-#edges-layer {
-    position: absolute;
-    top: 0; left: 0;
-    width: 3000px;
-    height: 2200px;
+    inset: 0;
     pointer-events: none;
-    z-index: 1;
 }
 
 /* ============================================
@@ -154,247 +138,118 @@ html, body {
 .graph-node {
     position: absolute;
     transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
     cursor: pointer;
     user-select: none;
     z-index: 10;
-    transition:
-        opacity 0.3s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease;
+    pointer-events: all;
+    will-change: left, top, opacity;
     font-family: var(--font-mono);
+    animation: nodeIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-.graph-node:hover {
-    z-index: 20;
+.graph-node:hover { z-index: 20; }
+
+/* Dot marker — the actual clickable circle */
+.node-dot {
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1.5px solid;
+    width: 10px;
+    height: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.graph-node:hover .node-dot { transform: scale(1.5); }
+
+/* Label floats to the right of the dot */
+.node-dot-label {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.node-dot-name {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.node-dot-sub {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   NODE TYPES — DOT MARKERS
+   ============================================ */
+
+.node-identity .node-dot {
+    width: 14px; height: 14px;
+    border-color: var(--accent-green);
+    background: rgba(0, 255, 136, 0.12);
+    animation: identityPulse 2.5s ease-in-out infinite;
+}
+.node-identity .node-dot-name { font-size: 0.82rem; font-weight: 700; color: var(--accent-green); }
+
+.node-cluster .node-dot {
+    width: 12px; height: 12px;
+    border-color: var(--accent-green);
+    background: rgba(0, 255, 136, 0.07);
+}
+.node-cluster .node-dot-name { color: var(--accent-green); font-weight: 600; }
+.node-cluster .node-dot-name::after { content: ' [+]'; font-size: 0.58rem; color: var(--text-muted); transition: color 0.2s; }
+.node-cluster.hub-expanded .node-dot-name::after { content: ' [−]'; color: var(--accent-green); }
+.node-cluster:hover .node-dot,
+.node-cluster.hub-expanded .node-dot { box-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+
+.node-experience .node-dot { border-color: var(--accent-cyan);   background: rgba(0, 212, 255, 0.07); }
+.node-experience:hover .node-dot { box-shadow: 0 0 8px rgba(0, 212, 255, 0.5); }
+
+.node-project .node-dot { border-color: var(--accent-purple); background: rgba(199, 146, 234, 0.07); }
+.node-project:hover .node-dot { box-shadow: 0 0 8px rgba(199, 146, 234, 0.5); }
+
+.node-skill { cursor: default; }
+.node-skill .node-dot { width: 7px; height: 7px; border-color: rgba(0, 255, 136, 0.45); background: rgba(0, 255, 136, 0.08); }
+.node-skill .node-dot-name { font-size: 0.62rem; color: var(--accent-green); }
+
+.node-interest .node-dot { border-color: var(--accent-amber); background: rgba(255, 179, 71, 0.07); }
+.node-interest:hover .node-dot { box-shadow: 0 0 8px rgba(255, 179, 71, 0.4); }
 
 /* States */
-.node-dimmed {
-    opacity: 0.1 !important;
+.node-dimmed { opacity: 0.1 !important; }
+
+.node-highlighted { z-index: 25 !important; }
+.node-highlighted .node-dot { transform: scale(1.7); }
+.node-highlighted.node-experience .node-dot { border-color: var(--accent-cyan);   box-shadow: 0 0 10px rgba(0, 212, 255, 0.6); }
+.node-highlighted.node-project .node-dot    { border-color: var(--accent-purple); box-shadow: 0 0 10px rgba(199, 146, 234, 0.6); }
+.node-highlighted.node-interest .node-dot   { border-color: var(--accent-amber);  box-shadow: 0 0 10px rgba(255, 179, 71, 0.5); }
+.node-highlighted.node-cluster .node-dot,
+.node-highlighted.node-identity .node-dot   { border-color: var(--accent-green);  box-shadow: 0 0 10px rgba(0, 255, 136, 0.6); }
+
+.node-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translate(-50%, -50%) scale(0.3) !important;
 }
 
-.node-highlighted {
-    z-index: 25 !important;
+@keyframes identityPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(0, 255, 136, 0.35); }
+    50%       { box-shadow: 0 0 18px rgba(0, 255, 136, 0.75), 0 0 36px rgba(0, 255, 136, 0.2); }
 }
 
-/* ============================================
-   NODE TYPES
-   ============================================ */
+@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
 
-/* Identity — center, largest, glowing */
-.node-identity {
-    background: var(--bg-inset);
-    border: 1px solid var(--accent-green);
-    padding: 1.4rem 1.8rem;
-    min-width: 240px;
-    box-shadow: var(--glow-green-lg);
-}
-
-.node-identity:hover {
-    box-shadow: 0 0 50px rgba(0, 255, 136, 0.35), 0 0 100px rgba(0, 255, 136, 0.15);
-}
-
-.node-identity .node-prompt {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-bottom: 0.6rem;
-}
-
-.node-identity .node-prompt::after { content: ' _'; animation: blink 1s step-end infinite; }
-
-.node-identity .node-label {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.1;
-    margin-bottom: 0.3rem;
-}
-
-.node-identity .node-sub {
-    font-size: 0.82rem;
-    color: var(--accent-cyan);
-    margin-bottom: 0.8rem;
-}
-
-.node-identity .node-sub::before { content: '// '; color: var(--text-muted); }
-
-.node-identity .node-seeking {
-    font-size: 0.72rem;
-    color: var(--accent-green);
-    border-left: 2px solid var(--accent-green);
-    padding-left: 0.6rem;
-    background: rgba(0, 255, 136, 0.05);
-    padding: 0.3rem 0.6rem;
-}
-
-.node-identity .node-seeking::before { content: '[OPEN] '; font-weight: 700; }
-
-/* Cluster hub — medium, category label */
-.node-cluster {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-active);
-    padding: 0.7rem 1.2rem;
-    min-width: 130px;
-    text-align: center;
-}
-
-.node-cluster:hover {
-    border-color: var(--accent-green);
-    box-shadow: var(--glow-green);
-}
-
-.node-cluster .node-label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--accent-green);
-}
-
-.node-cluster .node-sub {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-top: 0.2rem;
-}
-
-/* Experience — terminal box with date */
-.node-experience {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-dim);
-    border-left: 2px solid var(--accent-cyan);
-    padding: 0.7rem 1rem;
-    min-width: 170px;
-}
-
-.node-experience:hover {
-    border-color: var(--accent-cyan);
-    border-left-color: var(--accent-cyan);
-    box-shadow: 0 0 18px rgba(0, 212, 255, 0.15);
-}
-
-.node-experience .node-label {
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 0.2rem;
-}
-
-.node-experience .node-sub {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-}
-
-/* Project — like experience but purple/green left border */
-.node-project {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-dim);
-    border-left: 2px solid var(--accent-purple);
-    padding: 0.7rem 1rem;
-    min-width: 170px;
-}
-
-.node-project:hover {
-    border-color: var(--accent-purple);
-    border-left-color: var(--accent-purple);
-    box-shadow: 0 0 18px rgba(199, 146, 234, 0.15);
-}
-
-.node-project .node-label {
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 0.2rem;
-}
-
-.node-project .node-sub {
-    font-size: 0.68rem;
-    color: var(--text-muted);
-}
-
-/* Skill — small pill */
-.node-skill {
-    background: rgba(0, 255, 136, 0.06);
-    border: 1px solid rgba(0, 255, 136, 0.2);
-    padding: 0.25rem 0.7rem;
-    font-size: 0.75rem;
-    color: var(--accent-green);
-    white-space: nowrap;
-    cursor: default;
-}
-
-/* Interest — amber tint */
-.node-interest {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-dim);
-    border-left: 2px solid var(--accent-amber);
-    padding: 0.6rem 0.9rem;
-    min-width: 150px;
-}
-
-.node-interest:hover {
-    border-color: var(--accent-amber);
-    border-left-color: var(--accent-amber);
-    box-shadow: 0 0 18px rgba(255, 179, 71, 0.12);
-}
-
-.node-interest .node-label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 0.2rem;
-}
-
-.node-interest .node-sub {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-}
-
-/* Highlighted node ring */
-.node-highlighted.node-experience { border-color: var(--accent-cyan); }
-.node-highlighted.node-project    { border-color: var(--accent-purple); }
-.node-highlighted.node-interest   { border-color: var(--accent-amber); }
-.node-highlighted.node-cluster,
-.node-highlighted.node-identity   { border-color: var(--accent-green); }
-
-/* ============================================
-   EDGES (SVG)
-   ============================================ */
-.graph-edge {
-    stroke: rgba(42, 74, 50, 0.7);
-    stroke-width: 1;
-    stroke-dasharray: 6 5;
-    fill: none;
-    transition: stroke 0.3s ease, opacity 0.3s ease, stroke-width 0.2s ease;
-    animation: dash-march 30s linear infinite;
-}
-
-.edge-dimmed {
-    opacity: 0.08;
-}
-
-.edge-highlighted {
-    stroke: rgba(0, 255, 136, 0.45);
-    stroke-width: 1.5;
-    stroke-dasharray: 6 5;
-}
-
-@keyframes dash-march {
-    to { stroke-dashoffset: -220; }
-}
-
-@keyframes blink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
-}
-
-/* Node entrance animation */
 @keyframes nodeIn {
-    from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
     to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-}
-
-.graph-node {
-    animation: nodeIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    opacity: 0;
 }
 
 /* ============================================
@@ -842,7 +697,7 @@ html, body {
 
     #detail-panel.open { transform: translateY(0); }
 
-    .zoom-controls { bottom: auto; top: 60px; left: 1rem; }
+    .zoom-controls { bottom: 0.8rem; left: 1rem; }
     .visitor-badge { bottom: 0.8rem; right: 1rem; }
 
     #term-bar { display: none; }

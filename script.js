@@ -1,31 +1,26 @@
 'use strict';
 
 /* =============================================================
-   GRAPH PORTFOLIO
+   GLOBE PORTFOLIO — Three.js Edition
    ============================================================= */
 
-const WORLD = { w: 3000, h: 2200 };
-const CX = 1500, CY = 1100;
 const HEADER_H = 44;
-const SCALE_MIN = 0.25, SCALE_MAX = 2.2, SCALE_STEP = 0.1;
 
+/* ── State ─────────────────────────────────────────────────── */
 const state = {
-    pan: { x: 0, y: 0 },
-    scale: 0.85,
-    dragging: false,
-    didDrag: false,
-    dragStart: { x: 0, y: 0 },
-    panStart: { x: 0, y: 0 },
     activeNodeId: null,
-    lang: localStorage.getItem('lang') || 'en',
+    expandedHubs: new Set(),
     flyAnim: null,
+    lang: localStorage.getItem('lang') || 'en',
+    _camera: null,
+    _controls: null,
+    _arcLines: {},
 };
 
 /* ── Node data ─────────────────────────────────────────────── */
 const NODES = [
     {
         id: 'identity', type: 'identity',
-        x: CX, y: CY,
         en: 'Mattéo Pourcine', fr: 'Mattéo Pourcine',
         sub_en: 'AI Systems Engineer', sub_fr: 'Ingénieur Systèmes IA',
         panel: {
@@ -41,7 +36,7 @@ const NODES = [
 <div class="p-section">
   <div class="p-label">About</div>
   <p class="p-bio">Engineering student at UTBM specializing in AI systems — computer vision, deep learning, and GPU computing. I build systems that see, understand, and act.</p>
-  <p class="p-bio">International background: exchanges at UQAC (Canada) and AGH (Poland). Former CTO at AnotherBrain, a bio-inspired AI startup.</p>
+  <p class="p-bio">International background: exchanges at UQAC (Canada) and AGH (Poland). R&D Intern at AnotherBrain, a bio-inspired AI startup.</p>
 </div>
 <div class="p-section">
   <div class="p-label">Stack</div>
@@ -74,7 +69,7 @@ const NODES = [
 <div class="p-section">
   <div class="p-label">À propos</div>
   <p class="p-bio">Étudiant ingénieur à l'UTBM spécialisé en systèmes IA — vision par ordinateur, deep learning et calcul GPU. Je construis des systèmes qui voient, comprennent et agissent.</p>
-  <p class="p-bio">Parcours international : échanges à l'UQAC (Canada) et l'AGH (Pologne). Ancien CTO chez AnotherBrain, startup d'IA bio-inspirée.</p>
+  <p class="p-bio">Parcours international : échanges à l'UQAC (Canada) et l'AGH (Pologne). Stagiaire R&D chez AnotherBrain, startup d'IA bio-inspirée.</p>
 </div>
 <div class="p-section">
   <div class="p-label">Stack</div>
@@ -102,7 +97,6 @@ const NODES = [
     /* ── Cluster hubs ──────────────────────────────────────── */
     {
         id: 'hub-exp', type: 'cluster',
-        x: 1260, y: 940,
         en: 'Experience', fr: 'Expérience',
         sub_en: '4 entries', sub_fr: '4 entrées',
         panel: {
@@ -112,10 +106,10 @@ const NODES = [
   <div class="p-prompt">ls ~/experience</div>
   <div class="p-label">Academic &amp; Professional</div>
   <ul class="p-list">
-    <li>AnotherBrain — AI Startup, CTO</li>
-    <li>UTBM — Engineering degree (ongoing)</li>
-    <li>UQAC — Exchange, Québec, Canada</li>
-    <li>AGH — Exchange, Kraków, Poland</li>
+    <li>AnotherBrain — AI Startup, R&D Intern · Paris, France</li>
+    <li>UTBM — Engineering degree (ongoing) · Belfort, France</li>
+    <li>UQAC — Exchange · Saguenay, Canada</li>
+    <li>AGH — Exchange · Kraków, Poland</li>
   </ul>
 </div>`,
             fr: `
@@ -123,17 +117,16 @@ const NODES = [
   <div class="p-prompt">ls ~/expérience</div>
   <div class="p-label">Académique &amp; Professionnel</div>
   <ul class="p-list">
-    <li>AnotherBrain — Startup IA, CTO</li>
-    <li>UTBM — Diplôme ingénieur (en cours)</li>
-    <li>UQAC — Échange, Québec, Canada</li>
-    <li>AGH — Échange, Cracovie, Pologne</li>
+    <li>AnotherBrain — Startup IA, Stagiaire R&D · Paris, France</li>
+    <li>UTBM — Diplôme ingénieur (en cours) · Belfort, France</li>
+    <li>UQAC — Échange · Saguenay, Canada</li>
+    <li>AGH — Échange · Cracovie, Pologne</li>
   </ul>
 </div>`
         }
     },
     {
         id: 'hub-proj', type: 'cluster',
-        x: 1740, y: 940,
         en: 'Projects', fr: 'Projets',
         sub_en: '3 featured', sub_fr: '3 sélectionnés',
         panel: {
@@ -166,7 +159,6 @@ const NODES = [
     },
     {
         id: 'hub-skills', type: 'cluster',
-        x: 1500, y: 1360,
         en: 'Skills', fr: 'Compétences',
         sub_en: 'tech stack', sub_fr: 'stack technique',
         panel: {
@@ -223,7 +215,6 @@ const NODES = [
     },
     {
         id: 'hub-interests', type: 'cluster',
-        x: 1260, y: 1280,
         en: 'Interests', fr: "Centres d'intérêt",
         sub_en: 'beyond code', sub_fr: 'au-delà du code',
         panel: {
@@ -233,8 +224,8 @@ const NODES = [
   <div class="p-prompt">ls ~/interests</div>
   <div class="p-label">Creative &amp; Personal</div>
   <ul class="p-list">
-    <li>Documentary filmmaking</li>
-    <li>Travel &amp; cultural immersion</li>
+    <li>Documentary filmmaking — science vulgarisation</li>
+    <li>Travel &amp; filming — crystallizing journeys on film</li>
     <li>Philosophy of mind &amp; AI ethics</li>
     <li>Rock climbing</li>
   </ul>
@@ -244,8 +235,8 @@ const NODES = [
   <div class="p-prompt">ls ~/centres-d-intérêt</div>
   <div class="p-label">Créatif &amp; Personnel</div>
   <ul class="p-list">
-    <li>Réalisation de documentaires</li>
-    <li>Voyages &amp; immersion culturelle</li>
+    <li>Réalisation de documentaires — vulgarisation scientifique</li>
+    <li>Voyages &amp; filmmaking — cristalliser les voyages en vidéo</li>
     <li>Philosophie de l'esprit &amp; éthique IA</li>
     <li>Escalade</li>
   </ul>
@@ -253,19 +244,19 @@ const NODES = [
         }
     },
 
-    /* ── Experience nodes ──────────────────────────────────── */
+    /* ── Experience nodes — real geographic coordinates ──── */
     {
         id: 'anotherbrain', type: 'experience',
-        x: 1020, y: 820,
+        geo: { lat: 48.85, lon: 2.35 },
         en: 'AnotherBrain', fr: 'AnotherBrain',
-        sub_en: 'CTO · AI Startup', sub_fr: 'CTO · Startup IA',
+        sub_en: 'R&D Intern · AI Startup', sub_fr: 'Stagiaire R&D · Startup IA',
         panel: {
             path: '~/exp/anotherbrain',
             en: `
 <div class="p-section">
   <div class="p-prompt">cat anotherbrain.md</div>
   <div class="p-name">AnotherBrain</div>
-  <div class="p-meta">Chief Technology Officer</div>
+  <div class="p-meta">R&D Intern</div>
   <div class="p-date">2023 — 2024 · Paris, France</div>
 </div>
 <div class="p-section">
@@ -295,7 +286,7 @@ const NODES = [
 <div class="p-section">
   <div class="p-prompt">cat anotherbrain.md</div>
   <div class="p-name">AnotherBrain</div>
-  <div class="p-meta">Directeur Technique (CTO)</div>
+  <div class="p-meta">Stagiaire R&D</div>
   <div class="p-date">2023 — 2024 · Paris, France</div>
 </div>
 <div class="p-section">
@@ -325,7 +316,7 @@ const NODES = [
     },
     {
         id: 'utbm', type: 'experience',
-        x: 1370, y: 780,
+        geo: { lat: 47.64, lon: 6.85 },
         en: 'UTBM', fr: 'UTBM',
         sub_en: 'Engineering degree', sub_fr: 'Diplôme ingénieur',
         panel: {
@@ -376,7 +367,7 @@ const NODES = [
     },
     {
         id: 'uqac', type: 'experience',
-        x: 980, y: 1060,
+        geo: { lat: 48.43, lon: -71.07 },
         en: 'UQAC', fr: 'UQAC',
         sub_en: 'Exchange · Canada', sub_fr: 'Échange · Canada',
         panel: {
@@ -423,7 +414,7 @@ const NODES = [
     },
     {
         id: 'agh', type: 'experience',
-        x: 1190, y: 730,
+        geo: { lat: 50.06, lon: 19.94 },
         en: 'AGH', fr: 'AGH',
         sub_en: 'Exchange · Poland', sub_fr: 'Échange · Pologne',
         panel: {
@@ -472,7 +463,6 @@ const NODES = [
     /* ── Project nodes ─────────────────────────────────────── */
     {
         id: 'mi7', type: 'project',
-        x: 1960, y: 800,
         en: 'MI7', fr: 'MI7',
         sub_en: 'CV pipeline · real-time', sub_fr: 'Pipeline CV · temps réel',
         panel: {
@@ -541,7 +531,6 @@ const NODES = [
     },
     {
         id: 'chatbot', type: 'project',
-        x: 1830, y: 730,
         en: 'Chatbot', fr: 'Chatbot',
         sub_en: 'RAG · LLM assistant', sub_fr: 'RAG · assistant LLM',
         panel: {
@@ -612,7 +601,6 @@ const NODES = [
     },
     {
         id: 'hackathon', type: 'project',
-        x: 2030, y: 1040,
         en: 'Hackathon', fr: 'Hackathon',
         sub_en: '24h AI challenge', sub_fr: 'Défi IA 24h',
         panel: {
@@ -677,23 +665,21 @@ const NODES = [
     /* ── GitHub repos node ─────────────────────────────────── */
     {
         id: 'github', type: 'cluster',
-        x: 2160, y: 940,
         en: 'GitHub', fr: 'GitHub',
         sub_en: 'all repos →', sub_fr: 'tous les dépôts →',
-        panel: { path: '~/github', en: '', fr: '' }, // rendered dynamically
+        panel: { path: '~/github', en: '', fr: '' },
     },
 
-    /* ── Skill nodes (non-interactive) ─────────────────────── */
-    { id: 'sk-python',  type: 'skill', x: 1280, y: 1490, en: 'Python',      fr: 'Python' },
-    { id: 'sk-cupy',    type: 'skill', x: 1420, y: 1560, en: 'CuPy / CUDA', fr: 'CuPy / CUDA' },
-    { id: 'sk-pytorch', type: 'skill', x: 1620, y: 1530, en: 'PyTorch',     fr: 'PyTorch' },
-    { id: 'sk-cv',      type: 'skill', x: 1760, y: 1455, en: 'OpenCV',      fr: 'OpenCV' },
-    { id: 'sk-cpp',     type: 'skill', x: 1160, y: 1435, en: 'C++',         fr: 'C++' },
+    /* ── Skill nodes ───────────────────────────────────────── */
+    { id: 'sk-python',  type: 'skill', en: 'Python',      fr: 'Python' },
+    { id: 'sk-cupy',    type: 'skill', en: 'CuPy / CUDA', fr: 'CuPy / CUDA' },
+    { id: 'sk-pytorch', type: 'skill', en: 'PyTorch',     fr: 'PyTorch' },
+    { id: 'sk-cv',      type: 'skill', en: 'OpenCV',      fr: 'OpenCV' },
+    { id: 'sk-cpp',     type: 'skill', en: 'C++',         fr: 'C++' },
 
     /* ── Interest nodes ────────────────────────────────────── */
     {
         id: 'documentary', type: 'interest',
-        x: 1080, y: 1370,
         en: 'Documentary', fr: 'Documentaire',
         sub_en: 'science vulgarisation', sub_fr: 'vulgarisation scientifique',
         panel: {
@@ -730,7 +716,6 @@ const NODES = [
     },
     {
         id: 'travel', type: 'interest',
-        x: 1060, y: 1210,
         en: 'Travel', fr: 'Voyages',
         sub_en: 'captured on film', sub_fr: 'cristallisés en vidéo',
         panel: {
@@ -796,44 +781,28 @@ const EDGES = [
     { from: 'utbm',          to: 'sk-cv' },
 ];
 
+/* ── Hub / leaf maps ───────────────────────────────────────── */
+const HUB_CHILDREN = {
+    'hub-exp':       ['anotherbrain', 'utbm', 'uqac', 'agh'],
+    'hub-proj':      ['mi7', 'chatbot', 'hackathon', 'github'],
+    'hub-skills':    ['sk-python', 'sk-cpp', 'sk-cupy', 'sk-pytorch', 'sk-cv'],
+    'hub-interests': ['documentary', 'travel'],
+};
+const ALL_LEAVES = new Set(Object.values(HUB_CHILDREN).flat());
 
-/* ── EdgePackets ────────────────────────────────────────────── */
-class EdgePackets {
-    constructor() {
-        this.canvas = document.createElement('canvas');
-        this.canvas.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;z-index:5;width:${WORLD.w}px;height:${WORLD.h}px`;
-        this.canvas.width  = WORLD.w;
-        this.canvas.height = WORLD.h;
-        document.getElementById('graph-world').appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
-        this.packets = EDGES.map(edge => {
-            const a = getNodeById(edge.from);
-            const b = getNodeById(edge.to);
-            return {
-                from: edge.from, to: edge.to,
-                x1: a.x, y1: a.y, x2: b.x, y2: b.y,
-                t: Math.random(),
-                speed: 0.0012 + Math.random() * 0.0018,
-            };
-        });
-        this.animate();
-    }
-
-    animate() {
-        const ctx = this.ctx;
-        ctx.clearRect(0, 0, WORLD.w, WORLD.h);
-        const active = state.activeNodeId;
-        this.packets.forEach(p => {
-            p.t = (p.t + p.speed) % 1;
-            const connected = !active || p.from === active || p.to === active;
-            const alpha = connected ? (active ? 0.85 : 0.3) : 0.03;
-            const x = p.x1 + (p.x2 - p.x1) * p.t;
-            const y = p.y1 + (p.y2 - p.y1) * p.t;
-            ctx.fillStyle = `rgba(0, 255, 136, ${alpha})`;
-            ctx.fillRect(x - 2, y - 2, 4, 4);
-        });
-        requestAnimationFrame(() => this.animate());
-    }
+function getParentHub(id) {
+    return Object.keys(HUB_CHILDREN).find(h => HUB_CHILDREN[h].includes(id)) || null;
+}
+function isNodeVisible(id) {
+    if (!ALL_LEAVES.has(id)) return true;
+    const ph = getParentHub(id);
+    return ph ? state.expandedHubs.has(ph) : true;
+}
+function updateHubExpanded() {
+    Object.keys(HUB_CHILDREN).forEach(hubId => {
+        const el = document.getElementById(`node-${hubId}`);
+        if (el) el.classList.toggle('hub-expanded', state.expandedHubs.has(hubId));
+    });
 }
 
 /* ── Helpers ───────────────────────────────────────────────── */
@@ -850,81 +819,305 @@ function getNeighborIds(nodeId) {
     return set;
 }
 
+/* ── Three.js spatial helpers ──────────────────────────────── */
+
+// lat/lon → 3D on sphere: lon=0,lat=0 → (0,0,r) faces initial camera
+function latLonToXYZ(lat, lon, r) {
+    const phi   = (90 - lat) * (Math.PI / 180);
+    const theta = lon * (Math.PI / 180);
+    return new THREE.Vector3(
+        r * Math.sin(phi) * Math.sin(theta),
+        r * Math.cos(phi),
+        r * Math.sin(phi) * Math.cos(theta)
+    );
+}
+
+// Ring point tilted toward camera (tiltDeg rotates ring toward viewer)
+function ringPoint(angleDeg, radius, tiltDeg) {
+    const a    = angleDeg * (Math.PI / 180);
+    const tilt = tiltDeg  * (Math.PI / 180);
+    const x     = radius * Math.cos(a);
+    const yFlat = radius * Math.sin(a);
+    return new THREE.Vector3(
+        x * 0.9,
+        yFlat * Math.cos(tilt) + 80,
+        yFlat * Math.sin(tilt) + 55
+    );
+}
+
+// Smooth great-circle arc between two 3D positions at radius r
+function greatCirclePoints(v1, v2, r, n) {
+    n = n || 44;
+    const pts = [];
+    for (let i = 0; i <= n; i++) {
+        pts.push(v1.clone().lerp(v2, i / n).normalize().multiplyScalar(r));
+    }
+    return pts;
+}
+
+// Assign ._pos to every node — all on globe surface (r=205), arcs hug surface too
+function computeNodePositions() {
+    const S = 205;
+
+    // Experience nodes: real geographic coordinates
+    NODES.forEach(n => {
+        if (n.geo) n._pos = latLonToXYZ(n.geo.lat, n.geo.lon, S);
+    });
+
+    // Identity: France center, r=212 for slight visual prominence
+    getNodeById('identity')._pos      = latLonToXYZ(46.0,   2.0,  212);
+
+    // Hub nodes: geographically spread across Europe/Atlantic
+    getNodeById('hub-exp')._pos       = latLonToXYZ(56.0,   3.0,  S);  // North Sea
+    getNodeById('hub-proj')._pos      = latLonToXYZ(43.0,  -9.0,  S);  // NW Spain coast
+    getNodeById('hub-interests')._pos = latLonToXYZ(60.0,   5.0,  S);  // Norway
+    getNodeById('hub-skills')._pos    = latLonToXYZ(36.0,  14.0,  S);  // Sicily/Malta
+
+    // Project leaf nodes: Atlantic / North Sea
+    getNodeById('mi7')._pos           = latLonToXYZ(50.0, -12.0,  S);
+    getNodeById('chatbot')._pos       = latLonToXYZ(54.0,  15.0,  S);  // Baltic
+    getNodeById('hackathon')._pos     = latLonToXYZ(45.0, -18.0,  S);  // Atlantic
+    getNodeById('github')._pos        = latLonToXYZ(57.0,  -6.0,  S);  // Scotland
+
+    // Skill nodes: Mediterranean / Middle East
+    getNodeById('sk-python')._pos     = latLonToXYZ(35.0,  15.0,  S);
+    getNodeById('sk-cpp')._pos        = latLonToXYZ(28.0,  12.0,  S);
+    getNodeById('sk-cupy')._pos       = latLonToXYZ(40.0,  25.0,  S);  // Greece
+    getNodeById('sk-pytorch')._pos    = latLonToXYZ(32.0,  35.0,  S);  // Middle East
+    getNodeById('sk-cv')._pos         = latLonToXYZ(51.0,  28.0,  S);  // Ukraine
+
+    // Interest nodes: Atlantic coast
+    getNodeById('documentary')._pos   = latLonToXYZ(46.0,  -4.0,  S);
+    getNodeById('travel')._pos        = latLonToXYZ(42.5,   3.0,  S);
+}
+
+/* ── Continent outlines via TopoJSON ───────────────────────── */
+async function loadContinents(scene) {
+    try {
+        const topo = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json').then(r => r.json());
+        const mesh = topojson.mesh(topo, topo.objects.land);
+        const positions = [];
+        mesh.coordinates.forEach(ring => {
+            for (let i = 0; i < ring.length - 1; i++) {
+                positions.push(...latLonToXYZ(ring[i][1],   ring[i][0],   202).toArray());
+                positions.push(...latLonToXYZ(ring[i+1][1], ring[i+1][0], 202).toArray());
+            }
+        });
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        scene.add(new THREE.LineSegments(geo,
+            new THREE.LineBasicMaterial({ color: 0x1f7a40, transparent: true, opacity: 0.7 })
+        ));
+    } catch (e) {
+        console.warn('continent load failed:', e);
+    }
+}
+
 /* ── Node HTML ─────────────────────────────────────────────── */
 function nodeInnerHTML(node) {
     const L     = state.lang;
     const label = L === 'fr' ? node.fr : node.en;
     const sub   = L === 'fr' ? (node.sub_fr || node.sub_en || '') : (node.sub_en || '');
-
-    if (node.type === 'identity') {
-        return `
-            <div class="node-prompt">matteo@portfolio:~$</div>
-            <div class="node-label">${label}</div>
-            <div class="node-sub">${sub}</div>
-            <div class="node-seeking">${L === 'fr' ? 'Ouvert aux opportunités' : 'Open to opportunities'}</div>`;
-    }
-    if (node.type === 'skill') {
-        return `<span>${label}</span>`;
-    }
-    return `
-        <div class="node-label">${label}</div>
-        ${sub ? `<div class="node-sub">${sub}</div>` : ''}`;
+    const subHtml = sub ? `<span class="node-dot-sub">${sub}</span>` : '';
+    return `<div class="node-dot"></div><div class="node-dot-label"><span class="node-dot-name">${label}</span>${subHtml}</div>`;
 }
 
-/* ── Render ────────────────────────────────────────────────── */
+/* ── Render nodes into #node-overlay ──────────────────────── */
 function renderNodes() {
-    const world = document.getElementById('graph-world');
-    world.querySelectorAll('.graph-node').forEach(el => el.remove());
+    const overlay = document.getElementById('node-overlay');
+    overlay.querySelectorAll('.graph-node').forEach(el => el.remove());
 
     NODES.forEach((node, i) => {
         const el = document.createElement('div');
         el.className = `graph-node node-${node.type}`;
         el.id = `node-${node.id}`;
-        el.style.cssText = `left:${node.x}px;top:${node.y}px;animation-delay:${i * 0.045}s`;
+        el.style.animationDelay = `${i * 0.045}s`;
         el.innerHTML = nodeInnerHTML(node);
-
-        if (node.type !== 'skill') {
-            el.addEventListener('click', e => {
-                if (state.didDrag) return;
-                e.stopPropagation();
-                selectNode(node.id);
-            });
-        }
-        world.appendChild(el);
+        overlay.appendChild(el);
     });
 }
 
-function renderEdges() {
-    const svg = document.getElementById('edges-layer');
-    svg.innerHTML = '';
+/* ── Globe / Three.js scene ─────────────────────────────────── */
+function initGlobe(onReady) {
+    const canvas = document.getElementById('globe-canvas');
+    const cont   = canvas.parentElement;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 1, 5000);
+    camera.position.set(0, 80, 520);
+    state._camera = camera;
+
+    const controls = new THREE.OrbitControls(camera, canvas);
+    controls.enablePan       = false;
+    controls.minDistance     = 260;
+    controls.maxDistance     = 1100;
+    controls.autoRotate      = true;
+    controls.autoRotateSpeed = 0.22;
+    controls.enableDamping   = true;
+    controls.dampingFactor   = 0.07;
+    controls.target.set(0, 0, 0);
+    state._controls = controls;
+
+    // Globe body
+    scene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(200, 64, 64),
+        new THREE.MeshBasicMaterial({ color: 0x040a07 })
+    ));
+
+    // Lat/lon wireframe grid (subtle, behind continent outlines)
+    scene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(201.5, 24, 12),
+        new THREE.MeshBasicMaterial({ color: 0x163320, wireframe: true, transparent: true, opacity: 0.10 })
+    ));
+
+    // Atmosphere glow
+    scene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(218, 32, 32),
+        new THREE.MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.033, side: THREE.BackSide })
+    ));
+
+    // Starfield
+    const starPos = new Float32Array(1400 * 3);
+    for (let i = 0; i < 1400; i++) {
+        const t = Math.random() * Math.PI * 2;
+        const p = Math.acos(2 * Math.random() - 1);
+        const r = 750 + Math.random() * 350;
+        starPos[i * 3]     = r * Math.sin(p) * Math.cos(t);
+        starPos[i * 3 + 1] = r * Math.sin(p) * Math.sin(t);
+        starPos[i * 3 + 2] = r * Math.cos(p);
+    }
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    scene.add(new THREE.Points(starGeo,
+        new THREE.PointsMaterial({ color: 0xffffff, size: 0.9, transparent: true, opacity: 0.38 })
+    ));
+
+    // Compute 3D positions for all nodes
+    computeNodePositions();
+    loadContinents(scene);
+
+    // Build arcs for each edge
+    const arcLines = {};
     EDGES.forEach(edge => {
         const a = getNodeById(edge.from);
         const b = getNodeById(edge.to);
-        if (!a || !b) return;
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', a.x);
-        line.setAttribute('y1', a.y);
-        line.setAttribute('x2', b.x);
-        line.setAttribute('y2', b.y);
-        line.classList.add('graph-edge');
-        line.dataset.from = edge.from;
-        line.dataset.to   = edge.to;
-        svg.appendChild(line);
+        if (!a?._pos || !b?._pos) return;
+        const r   = Math.max(a._pos.length(), b._pos.length()) * 0.985;
+        const pts = greatCirclePoints(a._pos, b._pos, Math.max(r, 203));
+        const geo = new THREE.BufferGeometry().setFromPoints(
+            new THREE.CatmullRomCurve3(pts).getPoints(64)
+        );
+        const mat  = new THREE.LineBasicMaterial({ color: 0x1e3a28, transparent: true, opacity: 0.5 });
+        const line = new THREE.Line(geo, mat);
+        scene.add(line);
+        arcLines[`${edge.from}-${edge.to}`] = { mat, line, curve: new THREE.CatmullRomCurve3(pts) };
     });
-}
+    state._arcLines = arcLines;
 
-/* ── Transform ─────────────────────────────────────────────── */
-function applyTransform() {
-    document.getElementById('graph-world').style.transform =
-        `translate(${state.pan.x}px,${state.pan.y}px) scale(${state.scale})`;
-}
+    // EdgePackets — InstancedMesh squares that travel along arcs
+    const validEdges = EDGES.filter(e => arcLines[`${e.from}-${e.to}`]);
+    const packets    = validEdges.map(e => ({
+        key:   `${e.from}-${e.to}`,
+        from:  e.from,
+        to:    e.to,
+        t:     Math.random(),
+        speed: 0.0009 + Math.random() * 0.0013,
+    }));
 
-function centerGraph() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight - HEADER_H;
-    state.pan.x = vw / 2 - CX * state.scale;
-    state.pan.y = vh / 2 - CY * state.scale;
-    applyTransform();
+    const pktMat  = new THREE.MeshBasicMaterial({
+        color: 0x00ff88, transparent: true, opacity: 0.8,
+        side: THREE.DoubleSide, depthWrite: false
+    });
+    const pktMesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.5, 1.5), pktMat, packets.length);
+    pktMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    scene.add(pktMesh);
+    const dummy = new THREE.Object3D();
+
+    // Resize handler
+    function resize() {
+        const w = cont.clientWidth;
+        const h = cont.clientHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Project HTML nodes to screen coordinates each frame
+    const overlay = document.getElementById('node-overlay');
+    const tempV   = new THREE.Vector3();
+
+    function projectNodes() {
+        const w = cont.clientWidth;
+        const h = cont.clientHeight;
+        const camN = camera.position.clone().normalize();
+
+        NODES.forEach(node => {
+            const el = document.getElementById(`node-${node.id}`);
+            if (!el || !node._pos) return;
+
+            // Hub-based visibility: leaf nodes hidden when hub is collapsed
+            const hubVis = isNodeVisible(node.id);
+            el.classList.toggle('node-hidden', !hubVis);
+
+            tempV.copy(node._pos).project(camera);
+            const sx = (tempV.x + 1) / 2 * w;
+            const sy = (-tempV.y + 1) / 2 * h;
+
+            const dot    = node._pos.clone().normalize().dot(camN);
+            const onBack = dot < 0.0;
+
+            el.style.left    = sx + 'px';
+            el.style.top     = sy + 'px';
+            el.style.display = (onBack || tempV.z > 1) ? 'none' : '';
+        });
+    }
+
+    // Animate packets along arcs, update arc highlight colors
+    function animatePackets() {
+        const active = state.activeNodeId;
+        packets.forEach((p, i) => {
+            const arc = arcLines[p.key];
+            const edgeVis = isNodeVisible(p.from) && isNodeVisible(p.to);
+
+            if (!arc || !edgeVis) {
+                if (arc) { arc.mat.opacity = 0; }
+                dummy.position.set(9999, 9999, 9999);
+                dummy.updateMatrix();
+                pktMesh.setMatrixAt(i, dummy.matrix);
+                return;
+            }
+
+            p.t = (p.t + p.speed) % 1;
+            const pt = arc.curve.getPoint(p.t);
+            dummy.position.copy(pt);
+            dummy.lookAt(camera.position);
+            dummy.updateMatrix();
+            pktMesh.setMatrixAt(i, dummy.matrix);
+
+            const connected = !active || p.from === active || p.to === active;
+            arc.mat.color.setHex(active ? (connected ? 0x00ff88 : 0x0a1205) : 0x1e3a28);
+            arc.mat.opacity  = active ? (connected ? 0.9 : 0.04) : 0.5;
+        });
+        pktMesh.instanceMatrix.needsUpdate = true;
+    }
+
+    // Main render loop
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        animatePackets();
+        renderer.render(scene, camera);
+        projectNodes();
+    }
+    animate();
+
+    onReady();
 }
 
 /* ── Highlight ─────────────────────────────────────────────── */
@@ -934,26 +1127,37 @@ function highlightGraph(nodeId) {
 
     document.querySelectorAll('.graph-node').forEach(el => {
         const id = el.id.replace('node-', '');
-        el.classList.toggle('node-dimmed',     !active.has(id));
-        el.classList.toggle('node-highlighted', active.has(id));
-    });
-
-    document.querySelectorAll('.graph-edge').forEach(el => {
-        const connected = el.dataset.from === nodeId || el.dataset.to === nodeId;
-        el.classList.toggle('edge-highlighted',  connected);
-        el.classList.toggle('edge-dimmed',       !connected);
+        el.classList.toggle('node-dimmed',      !active.has(id));
+        el.classList.toggle('node-highlighted',  active.has(id));
     });
 }
 
 function clearHighlight() {
     document.querySelectorAll('.graph-node').forEach(el =>
         el.classList.remove('node-dimmed', 'node-highlighted'));
-    document.querySelectorAll('.graph-edge').forEach(el =>
-        el.classList.remove('edge-dimmed', 'edge-highlighted'));
+
+    EDGES.forEach(edge => {
+        const arc = state._arcLines[`${edge.from}-${edge.to}`];
+        if (arc) { arc.mat.color.setHex(0x1e3a28); arc.mat.opacity = 0.5; }
+    });
 }
 
 /* ── Selection ─────────────────────────────────────────────── */
 function selectNode(id) {
+    const isHub = id in HUB_CHILDREN;
+
+    if (isHub) {
+        if (state.expandedHubs.has(id) && state.activeNodeId === id) {
+            // Second click on active expanded hub: collapse + close
+            state.expandedHubs.delete(id);
+            updateHubExpanded();
+            closePanel();
+            return;
+        }
+        state.expandedHubs.add(id);
+        updateHubExpanded();
+    }
+
     if (state.activeNodeId === id) { closePanel(); return; }
     state.activeNodeId = id;
     const node = getNodeById(id);
@@ -1019,148 +1223,80 @@ function closePanel() {
     clearHighlight();
 }
 
-/* ── Fly to node ────────────────────────────────────────────── */
+/* ── Fly camera to face a node ──────────────────────────────── */
 function flyToNode(node) {
-    const vw       = window.innerWidth;
-    const vh       = window.innerHeight - HEADER_H;
-    const isMobile = vw <= 768;
-    const offsetX  = (node.panel && !isMobile) ? 210 : 0;
-    const offsetY  = (node.panel && isMobile)  ? -(vh * 0.325) : 0;
+    if (!node._pos || !state._camera) return;
 
-    const targetX = vw / 2 - offsetX - node.x * state.scale;
-    const targetY = vh / 2 + offsetY - node.y * state.scale;
-    const startX  = state.pan.x, startY = state.pan.y;
-    const duration = 600, start = performance.now();
+    const camera   = state._camera;
+    const controls = state._controls;
 
-    if (state.flyAnim) { cancelAnimationFrame(state.flyAnim); state.flyAnim = null; }
+    controls.autoRotate = false;
+
+    // Camera moves to face node's hemisphere, keeps similar distance (min 380)
+    const dist      = Math.max(camera.position.length(), 380);
+    const targetPos = node._pos.clone().normalize().multiplyScalar(dist);
+    targetPos.y    += 40;
+
+    const startPos = camera.position.clone();
+    const dur = 800, t0 = performance.now();
+
+    if (state.flyAnim) cancelAnimationFrame(state.flyAnim);
 
     function step(now) {
-        const t    = Math.min((now - start) / duration, 1);
+        const t    = Math.min((now - t0) / dur, 1);
         const ease = 1 - Math.pow(1 - t, 3);
-        state.pan.x = startX + (targetX - startX) * ease;
-        state.pan.y = startY + (targetY - startY) * ease;
-        applyTransform();
+        camera.position.lerpVectors(startPos, targetPos, ease);
+        controls.update();
         if (t < 1) state.flyAnim = requestAnimationFrame(step);
         else state.flyAnim = null;
     }
     state.flyAnim = requestAnimationFrame(step);
 }
 
-/* ── Zoom helper ────────────────────────────────────────────── */
-function zoomBy(delta, cx, cy) {
-    const vw = window.innerWidth, vh = window.innerHeight - HEADER_H;
-    if (cx === undefined) cx = vw / 2;
-    if (cy === undefined) cy = vh / 2;
-    const newScale = Math.min(SCALE_MAX, Math.max(SCALE_MIN, state.scale + delta));
-    const worldX   = (cx - state.pan.x) / state.scale;
-    const worldY   = (cy - state.pan.y) / state.scale;
-    state.scale    = newScale;
-    state.pan.x    = cx - worldX * state.scale;
-    state.pan.y    = cy - worldY * state.scale;
-    applyTransform();
-}
-
 /* ── Interactions ───────────────────────────────────────────── */
 function setupInteractions() {
-    const container = document.getElementById('graph-container');
+    const canvas   = document.getElementById('globe-canvas');
+    const overlay  = document.getElementById('node-overlay');
+    const camera   = state._camera;
+    const controls = state._controls;
 
-    /* Mouse pan */
-    container.addEventListener('mousedown', e => {
-        if (e.button !== 0) return;
-        state.dragging  = true;
-        state.didDrag   = false;
-        state.dragStart = { x: e.clientX, y: e.clientY };
-        state.panStart  = { x: state.pan.x, y: state.pan.y };
-        container.classList.add('dragging');
+    // Node clicks via event delegation on overlay
+    overlay.addEventListener('click', e => {
+        const nodeEl = e.target.closest('.graph-node');
+        if (!nodeEl) return;
+        const id = nodeEl.id.replace('node-', '');
+        const node = getNodeById(id);
+        if (node && node.type !== 'skill') selectNode(id);
     });
 
-    window.addEventListener('mousemove', e => {
-        if (state.dragging) {
-            const dx = e.clientX - state.dragStart.x;
-            const dy = e.clientY - state.dragStart.y;
-            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) state.didDrag = true;
-            state.pan.x = state.panStart.x + dx;
-            state.pan.y = state.panStart.y + dy;
-            applyTransform();
-        } else {
-            const nx = e.clientX / window.innerWidth - 0.5;
-            const ny = e.clientY / window.innerHeight - 0.5;
-            const tw = document.getElementById('tilt-wrapper');
-            if (tw) tw.style.transform = `rotateX(${-ny * 2.5}deg) rotateY(${nx * 2.5}deg)`;
-        }
+    // Canvas click without drag → deselect
+    let _ptrMoved = false;
+    canvas.addEventListener('pointerdown', () => { _ptrMoved = false; });
+    canvas.addEventListener('pointermove', e => { if (e.buttons) _ptrMoved = true; });
+    canvas.addEventListener('pointerup', () => { if (!_ptrMoved) closePanel(); });
+
+    // Zoom buttons
+    document.getElementById('zoom-in').addEventListener('click', () => {
+        const dir = camera.position.clone().normalize();
+        const next = camera.position.clone().addScaledVector(dir, -35);
+        if (next.length() >= controls.minDistance) camera.position.copy(next);
+        controls.update();
     });
-
-    window.addEventListener('mouseup', () => {
-        state.dragging = false;
-        container.classList.remove('dragging');
+    document.getElementById('zoom-out').addEventListener('click', () => {
+        const dir = camera.position.clone().normalize();
+        const next = camera.position.clone().addScaledVector(dir, 35);
+        if (next.length() <= controls.maxDistance) camera.position.copy(next);
+        controls.update();
     });
-
-    /* Wheel zoom */
-    container.addEventListener('wheel', e => {
-        e.preventDefault();
-        zoomBy(e.deltaY > 0 ? -SCALE_STEP : SCALE_STEP, e.clientX, e.clientY - HEADER_H);
-    }, { passive: false });
-
-    /* Click background → deselect */
-    container.addEventListener('click', e => {
-        if (state.didDrag) return;
-        if (!e.target.closest('.graph-node')) closePanel();
-    });
-
-    /* Zoom buttons */
-    document.getElementById('zoom-in').addEventListener('click',    () => zoomBy(SCALE_STEP));
-    document.getElementById('zoom-out').addEventListener('click',   () => zoomBy(-SCALE_STEP));
     document.getElementById('zoom-reset').addEventListener('click', () => {
-        state.scale = 0.85;
-        centerGraph();
+        camera.position.set(0, 80, 520);
+        controls.target.set(0, 0, 0);
+        controls.autoRotate = true;
+        controls.update();
+        closePanel();
     });
 
-    /* Keyboard */
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closePanel();
-    });
-
-    /* Touch — pan + pinch */
-    let lastTouch = null, lastPinchDist = null;
-
-    container.addEventListener('touchstart', e => {
-        if (e.touches.length === 1) {
-            state.didDrag  = false;
-            lastTouch      = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        } else if (e.touches.length === 2) {
-            lastPinchDist = Math.hypot(
-                e.touches[1].clientX - e.touches[0].clientX,
-                e.touches[1].clientY - e.touches[0].clientY
-            );
-        }
-    }, { passive: true });
-
-    container.addEventListener('touchmove', e => {
-        e.preventDefault();
-        if (e.touches.length === 1 && lastTouch) {
-            const dx = e.touches[0].clientX - lastTouch.x;
-            const dy = e.touches[0].clientY - lastTouch.y;
-            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) state.didDrag = true;
-            state.pan.x += dx;
-            state.pan.y += dy;
-            lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            applyTransform();
-        } else if (e.touches.length === 2 && lastPinchDist) {
-            const dist = Math.hypot(
-                e.touches[1].clientX - e.touches[0].clientX,
-                e.touches[1].clientY - e.touches[0].clientY
-            );
-            const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-            const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - HEADER_H;
-            zoomBy((dist / lastPinchDist - 1) * state.scale, cx, cy);
-            lastPinchDist = dist;
-        }
-    }, { passive: false });
-
-    container.addEventListener('touchend', e => {
-        if (e.touches.length === 0) { lastTouch = null; lastPinchDist = null; }
-    }, { passive: true });
-
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 }
 
 /* ── Language ───────────────────────────────────────────────── */
@@ -1195,13 +1331,13 @@ function setLang(lang) {
 
 /* ── Boot sequence ──────────────────────────────────────────── */
 const BOOT_LINES = [
-    { text: 'PORTFOLIO  v2.0',          cls: 'boot-title' },
-    { text: '─'.repeat(34),             cls: 'boot-sep'   },
-    { text: '> loading kernel',         ok: '          [OK]' },
-    { text: '> mounting graph',         ok: '         [OK]' },
-    { text: '> connecting pathways',    ok: '    [OK]' },
-    { text: '> starting matrix rain',   ok: '   [OK]' },
-    { text: '─'.repeat(34),             cls: 'boot-sep'   },
+    { text: 'PORTFOLIO  v3.0',            cls: 'boot-title' },
+    { text: '─'.repeat(34),               cls: 'boot-sep'   },
+    { text: '> loading kernel',           ok: '          [OK]' },
+    { text: '> mounting globe renderer',  ok: '  [OK]' },
+    { text: '> placing nodes on earth',   ok: '   [OK]' },
+    { text: '> routing neural pathways',  ok: '  [OK]' },
+    { text: '─'.repeat(34),               cls: 'boot-sep'   },
 ];
 
 function runBootSequence(onComplete) {
@@ -1238,14 +1374,12 @@ function runBootSequence(onComplete) {
         t += 185;
     });
 
-    // Progress bar
     setTimeout(() => {
         const wrap = document.createElement('div');
         wrap.className = 'boot-line boot-progress-wrap';
         wrap.innerHTML = '<span>[<span class="boot-bar"></span>] <span class="boot-pct">0%</span></span>';
         term.appendChild(wrap);
         requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('visible')));
-
         const barEl = wrap.querySelector('.boot-bar');
         const pctEl = wrap.querySelector('.boot-pct');
         const total = 24;
@@ -1259,15 +1393,11 @@ function runBootSequence(onComplete) {
     }, t);
     t += 580;
 
-    // Ready line
-    addLine('<span class="boot-ready">&gt; portfolio ready.</span>', '', t);
+    addLine('<span class="boot-ready">&gt; globe ready.</span>', '', t);
     t += 220;
-
-    // Prompt
     addLine('<span class="boot-prompt">matteo@portfolio:~$&nbsp;<span class="boot-cursor-blink">_</span></span>', '', t);
     t += 650;
 
-    // Fade out
     setTimeout(() => {
         overlay.classList.add('fade-out');
         setTimeout(() => { overlay.remove(); onComplete(); }, 560);
@@ -1320,7 +1450,7 @@ function initFakeTerm() {
                 '&nbsp;&nbsp;ls skills     — jump to skills hub',
                 '&nbsp;&nbsp;cd &lt;name&gt;      — navigate to node',
                 '&nbsp;&nbsp;pwd           — current location',
-                '&nbsp;&nbsp;clear         — reset view',
+                '&nbsp;&nbsp;clear         — reset globe view',
                 '&nbsp;&nbsp;./contact     — open contact panel',
             ]);
         } else if (cmd === 'whoami' || cmd === './whoami') {
@@ -1332,7 +1462,7 @@ function initFakeTerm() {
                 showOutput(['&gt; projects/', '&nbsp;&nbsp;mi7&nbsp;&nbsp;chatbot&nbsp;&nbsp;hackathon&nbsp;&nbsp;github']);
             } else if (args === 'exp' || args === 'experience') {
                 selectNode('hub-exp');
-                showOutput(['&gt; experience/', '&nbsp;&nbsp;anotherbrain&nbsp;&nbsp;utbm&nbsp;&nbsp;uqac&nbsp;&nbsp;agh']);
+                showOutput(['&gt; experience/', '&nbsp;&nbsp;anotherbrain · Paris', '&nbsp;&nbsp;utbm · Belfort', '&nbsp;&nbsp;uqac · Canada', '&nbsp;&nbsp;agh · Poland']);
             } else if (args === 'skills') {
                 selectNode('hub-skills');
                 showOutput(['&gt; skills/', '&nbsp;&nbsp;python&nbsp;&nbsp;pytorch&nbsp;&nbsp;cupy&nbsp;&nbsp;opencv&nbsp;&nbsp;c++']);
@@ -1340,9 +1470,10 @@ function initFakeTerm() {
                 showOutput([
                     '&gt; nodes:',
                     '&nbsp;&nbsp;identity',
-                    '&nbsp;&nbsp;hub-exp &nbsp;&nbsp;anotherbrain &nbsp;&nbsp;utbm &nbsp;&nbsp;uqac &nbsp;&nbsp;agh',
-                    '&nbsp;&nbsp;hub-proj &nbsp;&nbsp;mi7 &nbsp;&nbsp;chatbot &nbsp;&nbsp;hackathon &nbsp;&nbsp;github',
-                    '&nbsp;&nbsp;hub-skills &nbsp;&nbsp;hub-interests &nbsp;&nbsp;documentary &nbsp;&nbsp;travel',
+                    '&nbsp;&nbsp;hub-exp · anotherbrain(Paris) · utbm(Belfort)',
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uqac(Canada) · agh(Poland)',
+                    '&nbsp;&nbsp;hub-proj · mi7 · chatbot · hackathon · github',
+                    '&nbsp;&nbsp;hub-skills · hub-interests · documentary · travel',
                 ]);
             }
         } else if (cmd === 'cd') {
@@ -1355,17 +1486,24 @@ function initFakeTerm() {
             );
             if (target) {
                 selectNode(target.id);
-                showOutput([`&gt; → ${target.id}`]);
+                const geoStr = target.geo
+                    ? ` (${target.geo.lat.toFixed(1)}°N, ${Math.abs(target.geo.lon).toFixed(1)}°${target.geo.lon >= 0 ? 'E' : 'W'})`
+                    : '';
+                showOutput([`&gt; → ${target.id}${geoStr}`]);
             } else {
                 showOutput([`&gt; cd: ${args}: no such node`], true);
             }
         } else if (cmd === 'pwd') {
             const cur = state.activeNodeId ? getNodeById(state.activeNodeId) : null;
-            showOutput(['&gt; ' + (cur ? (cur.panel?.path || '~/' + cur.id) : '~/portfolio')]);
+            showOutput(['&gt; ' + (cur ? (cur.panel?.path || '~/' + cur.id) : '~/globe')]);
         } else if (cmd === 'clear') {
             closePanel();
-            state.scale = 0.85;
-            centerGraph();
+            if (state._camera && state._controls) {
+                state._camera.position.set(0, 80, 520);
+                state._controls.target.set(0, 0, 0);
+                state._controls.autoRotate = true;
+                state._controls.update();
+            }
             hideOutput();
         } else if (cmd === './contact') {
             selectNode('identity');
@@ -1418,7 +1556,6 @@ function closeVideoModal() {
 
 /* ── Init ───────────────────────────────────────────────────── */
 window.addEventListener('DOMContentLoaded', () => {
-    // Wire static controls before boot finishes
     document.getElementById('lang-toggle').addEventListener('click', () =>
         setLang(state.lang === 'en' ? 'fr' : 'en'));
     document.getElementById('modal-close').addEventListener('click', closeVideoModal);
@@ -1431,14 +1568,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     runBootSequence(() => {
         renderNodes();
-        renderEdges();
-        new EdgePackets();
-        centerGraph();
-        setupInteractions();
-        updateLangUI();
-        initVisitorCounter();
+        initGlobe(() => {
+            setupInteractions();
+            updateLangUI();
+            initVisitorCounter();
+        });
     });
 
-    console.log('%c Mattéo Pourcine / AI Systems Engineer ', 'background:#0d0f0e;color:#00ff88;font-family:monospace;padding:4px 8px;border:1px solid #00ff88');
+    console.log('%c Mattéo Pourcine / AI Systems Engineer ', 'background:#000;color:#00ff88;font-family:monospace;padding:4px 8px;border:1px solid #00ff88');
     console.log('%c pourcinematteo@gmail.com ', 'color:#00d4ff;font-family:monospace');
+    console.log('%c type "help" in the terminal bar ↓ ', 'color:#3a5440;font-family:monospace');
 });
