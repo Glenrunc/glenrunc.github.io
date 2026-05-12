@@ -35,7 +35,7 @@ const NODES = [
 </div>
 <div class="p-section">
   <div class="p-label">About</div>
-  <p class="p-bio">Engineering student at UTBM specializing in AI systems — computer vision, deep learning, and GPU computing. I build systems that see, understand, and act.</p>
+  <p class="p-bio">Engineering student at UTBM specializing in AI systems — computer vision and deep learning. I build systems that see, understand, and act.</p>
   <p class="p-bio">International background: exchanges at UQAC (Canada) and AGH (Poland). R&D Intern at AnotherBrain, a bio-inspired AI startup.</p>
 </div>
 <div class="p-section">
@@ -46,7 +46,6 @@ const NODES = [
     <span class="p-badge">C++</span>
     <span class="p-badge">CuPy / CUDA</span>
     <span class="p-badge">OpenCV</span>
-    <span class="p-badge">Docker</span>
     <span class="p-badge">Linux</span>
   </div>
 </div>
@@ -68,7 +67,7 @@ const NODES = [
 </div>
 <div class="p-section">
   <div class="p-label">À propos</div>
-  <p class="p-bio">Étudiant ingénieur à l'UTBM spécialisé en systèmes IA — vision par ordinateur, deep learning et calcul GPU. Je construis des systèmes qui voient, comprennent et agissent.</p>
+  <p class="p-bio">Étudiant ingénieur à l'UTBM spécialisé en systèmes IA — vision par ordinateur et deep learning. Je construis des systèmes qui voient, comprennent et agissent.</p>
   <p class="p-bio">Parcours international : échanges à l'UQAC (Canada) et l'AGH (Pologne). Stagiaire R&D chez AnotherBrain, startup d'IA bio-inspirée.</p>
 </div>
 <div class="p-section">
@@ -79,7 +78,6 @@ const NODES = [
     <span class="p-badge">C++</span>
     <span class="p-badge">CuPy / CUDA</span>
     <span class="p-badge">OpenCV</span>
-    <span class="p-badge">Docker</span>
     <span class="p-badge">Linux</span>
   </div>
 </div>
@@ -179,11 +177,10 @@ const NODES = [
   <div class="p-label">GPU / Perf</div>
   <div class="p-tech">
     <span class="p-badge">CuPy</span><span class="p-badge">CUDA</span>
-    <span class="p-badge">TensorRT</span>
   </div>
   <div class="p-label">Tools</div>
   <div class="p-tech">
-    <span class="p-badge">Docker</span><span class="p-badge">Git</span>
+    <span class="p-badge">Git</span>
     <span class="p-badge">Linux</span><span class="p-badge">CMake</span>
   </div>
 </div>`,
@@ -203,11 +200,10 @@ const NODES = [
   <div class="p-label">GPU / Perf</div>
   <div class="p-tech">
     <span class="p-badge">CuPy</span><span class="p-badge">CUDA</span>
-    <span class="p-badge">TensorRT</span>
   </div>
   <div class="p-label">Outils</div>
   <div class="p-tech">
-    <span class="p-badge">Docker</span><span class="p-badge">Git</span>
+    <span class="p-badge">Git</span>
     <span class="p-badge">Linux</span><span class="p-badge">CMake</span>
   </div>
 </div>`
@@ -227,7 +223,6 @@ const NODES = [
     <li>Documentary filmmaking — science vulgarisation</li>
     <li>Travel &amp; filming — crystallizing journeys on film</li>
     <li>Philosophy of mind &amp; AI ethics</li>
-    <li>Rock climbing</li>
   </ul>
 </div>`,
             fr: `
@@ -238,7 +233,6 @@ const NODES = [
     <li>Réalisation de documentaires — vulgarisation scientifique</li>
     <li>Voyages &amp; filmmaking — cristalliser les voyages en vidéo</li>
     <li>Philosophie de l'esprit &amp; éthique IA</li>
-    <li>Escalade</li>
   </ul>
 </div>`
         }
@@ -279,7 +273,6 @@ const NODES = [
     <span class="p-badge">CuPy</span>
     <span class="p-badge">CUDA</span>
     <span class="p-badge">OpenCV</span>
-    <span class="p-badge">Docker</span>
   </div>
 </div>`,
             fr: `
@@ -309,7 +302,6 @@ const NODES = [
     <span class="p-badge">CuPy</span>
     <span class="p-badge">CUDA</span>
     <span class="p-badge">OpenCV</span>
-    <span class="p-badge">Docker</span>
   </div>
 </div>`
         }
@@ -330,17 +322,7 @@ const NODES = [
 </div>
 <div class="p-section">
   <div class="p-label">Program</div>
-  <p class="p-text">Engineering degree in Informatics &amp; Systems. Specialization in AI — computer vision, signal processing, embedded systems.</p>
-</div>
-<div class="p-section">
-  <div class="p-label">Key Courses</div>
-  <ul class="p-list">
-    <li>Computer Vision &amp; Image Processing</li>
-    <li>Machine Learning &amp; Neural Networks</li>
-    <li>Real-time Systems &amp; Embedded C++</li>
-    <li>Signal Processing</li>
-    <li>Software Architecture</li>
-  </ul>
+  <p class="p-text">Engineering degree in Virtual Worlds and Computer Vision.</p>
 </div>`,
             fr: `
 <div class="p-section">
@@ -351,17 +333,7 @@ const NODES = [
 </div>
 <div class="p-section">
   <div class="p-label">Formation</div>
-  <p class="p-text">Diplôme d'ingénieur en Informatique et Systèmes. Spécialisation IA — vision par ordinateur, traitement du signal, systèmes embarqués.</p>
-</div>
-<div class="p-section">
-  <div class="p-label">Cours Principaux</div>
-  <ul class="p-list">
-    <li>Vision par Ordinateur &amp; Traitement d'Images</li>
-    <li>Machine Learning &amp; Réseaux de Neurones</li>
-    <li>Systèmes Temps Réel &amp; C++ Embarqué</li>
-    <li>Traitement du Signal</li>
-    <li>Architecture Logicielle</li>
-  </ul>
+  <p class="p-text">Diplôme d'ingénieur en Mondes Virtuels et Vision par Ordinateur.</p>
 </div>`
         }
     },
@@ -428,13 +400,13 @@ const NODES = [
 </div>
 <div class="p-section">
   <div class="p-label">Exchange Program</div>
-  <p class="p-text">Erasmus+ exchange at one of Poland's top technical universities. Focused on robotics, computer vision, and embedded systems integration.</p>
+  <p class="p-text">Erasmus+ exchange at one of Poland's top technical universities. Focused on biometrics and deep learning applied to medical imaging.</p>
 </div>
 <div class="p-section">
   <div class="p-label">Courses</div>
   <ul class="p-list">
-    <li>Robotics &amp; Autonomous Systems</li>
-    <li>Embedded Vision Systems</li>
+    <li>Biometrics</li>
+    <li>Deep Learning for Medical Imaging</li>
     <li>Advanced Algorithms</li>
   </ul>
 </div>`,
@@ -447,13 +419,13 @@ const NODES = [
 </div>
 <div class="p-section">
   <div class="p-label">Programme d'Échange</div>
-  <p class="p-text">Échange Erasmus+ dans l'une des meilleures universités techniques polonaises. Accent sur la robotique, la vision par ordinateur et les systèmes embarqués.</p>
+  <p class="p-text">Échange Erasmus+ dans l'une des meilleures universités techniques polonaises. Accent sur la biométrie et le deep learning appliqué à l'imagerie médicale.</p>
 </div>
 <div class="p-section">
   <div class="p-label">Cours</div>
   <ul class="p-list">
-    <li>Robotique &amp; Systèmes Autonomes</li>
-    <li>Systèmes de Vision Embarqués</li>
+    <li>Biométrie</li>
+    <li>Deep Learning pour l'Imagerie Médicale</li>
     <li>Algorithmes Avancés</li>
   </ul>
 </div>`
@@ -464,27 +436,27 @@ const NODES = [
     {
         id: 'mi7', type: 'project',
         en: 'MI7', fr: 'MI7',
-        sub_en: 'CV pipeline · real-time', sub_fr: 'Pipeline CV · temps réel',
+        sub_en: 'CV toolkit · Mission Impossible inspired', sub_fr: 'Toolkit CV · inspiré Mission Impossible',
         panel: {
             path: '~/projects/mi7',
             en: `
 <div class="p-section">
   <div class="p-prompt">cat mi7/README.md</div>
   <div class="p-name">MI7</div>
-  <div class="p-meta">Real-time Computer Vision Pipeline</div>
+  <div class="p-meta">Computer Vision Toolkit · Mission Impossible inspired</div>
   <span class="p-badge-green">[WIP]</span>
 </div>
 <div class="p-section">
   <div class="p-label">Overview</div>
-  <p class="p-text">High-performance CV pipeline for real-time object detection and tracking. Optimized for edge deployment with TensorRT and custom CUDA kernels.</p>
+  <p class="p-text">All-in-one software bundling several computer vision capabilities into a single interface. Inspired by the spy-tech aesthetic of the Mission Impossible films.</p>
 </div>
 <div class="p-section">
   <div class="p-label">Features</div>
   <ul class="p-list">
-    <li>Sub-30ms inference latency on embedded GPU</li>
-    <li>Multi-object tracking with Kalman filter</li>
-    <li>Custom PyTorch → TensorRT export pipeline</li>
-    <li>REST API for remote control and monitoring</li>
+    <li>Image &amp; video segmentation</li>
+    <li>Inpainting</li>
+    <li>Deepfake generation</li>
+    <li>Facial recognition</li>
   </ul>
 </div>
 <div class="p-section">
@@ -492,29 +464,27 @@ const NODES = [
   <div class="p-tech">
     <span class="p-badge">Python</span>
     <span class="p-badge">PyTorch</span>
-    <span class="p-badge">TensorRT</span>
     <span class="p-badge">OpenCV</span>
-    <span class="p-badge">C++</span>
   </div>
 </div>`,
             fr: `
 <div class="p-section">
   <div class="p-prompt">cat mi7/README.md</div>
   <div class="p-name">MI7</div>
-  <div class="p-meta">Pipeline de Vision par Ordinateur Temps Réel</div>
+  <div class="p-meta">Toolkit de Vision par Ordinateur · inspiré Mission Impossible</div>
   <span class="p-badge-green">[EN COURS]</span>
 </div>
 <div class="p-section">
   <div class="p-label">Présentation</div>
-  <p class="p-text">Pipeline CV haute performance pour la détection et le suivi d'objets en temps réel. Optimisé pour le déploiement embarqué avec TensorRT et des kernels CUDA personnalisés.</p>
+  <p class="p-text">Logiciel tout-en-un regroupant plusieurs capacités de vision par ordinateur dans une seule interface. Inspiré de l'esthétique spy-tech des films Mission Impossible.</p>
 </div>
 <div class="p-section">
   <div class="p-label">Fonctionnalités</div>
   <ul class="p-list">
-    <li>Latence d'inférence sous 30ms sur GPU embarqué</li>
-    <li>Suivi multi-objets avec filtre de Kalman</li>
-    <li>Pipeline d'export PyTorch → TensorRT personnalisé</li>
-    <li>API REST pour contrôle et monitoring à distance</li>
+    <li>Segmentation d'images &amp; vidéos</li>
+    <li>Inpainting</li>
+    <li>Génération de deepfakes</li>
+    <li>Reconnaissance faciale</li>
   </ul>
 </div>
 <div class="p-section">
@@ -522,9 +492,7 @@ const NODES = [
   <div class="p-tech">
     <span class="p-badge">Python</span>
     <span class="p-badge">PyTorch</span>
-    <span class="p-badge">TensorRT</span>
     <span class="p-badge">OpenCV</span>
-    <span class="p-badge">C++</span>
   </div>
 </div>`
         }
